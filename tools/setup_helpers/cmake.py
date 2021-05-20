@@ -49,6 +49,13 @@ def convert_cmake_value_to_python_value(cmake_value, cmake_type):
             return None
         else:
             return cmake_value
+    elif cmake_type == 'STRING':
+        if cmake_value == 'OFF':
+            return False
+        elif cmake_value == 'ON':
+            return True
+        else:
+            return cmake_value
     else:  # Directly return the cmake_value.
         return cmake_value
 
