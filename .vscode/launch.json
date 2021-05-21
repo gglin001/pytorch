@@ -21,6 +21,11 @@
             "processId": "${command:pickProcess}",
             "MIMode": "gdb",
             "miDebuggerPath": "/usr/bin/gdb",
+            // it seems slower when disale loadAll, WHY?
+            "symbolLoadInfo": {
+                "loadAll": false,
+                "exceptionList": "libc10.so;libtorch_cpu.so;libtorch_python.so"
+            },
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -28,8 +33,8 @@
                     "ignoreFailures": true
                 },
                 {
-                    "description": "Skip stdio-common files",
-                    "text": "-interpreter-exec console \"skip -gfi stdlib/*.c\""
+                    "description": "load .gdbinit",
+                    "text": "source ${workspaceFolder}/.gdbinit"
                 }
             ],
         },
