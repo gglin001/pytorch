@@ -1,13 +1,6 @@
-import os  # isort: skip
-import sys  # isort: skip
-
-# torch_path = os.path.dirname(os.path.dirname(__file__))
-torch_path = '/data/songlin/repos/pytorch/'
-sys.path.insert(0, torch_path)
-import torch  # isort: skip
+import torch
 
 torch.set_num_threads(1)
-print(os.getpid())
 print(torch.__file__)
 
 a = torch.Tensor([-1, 2, -3])
