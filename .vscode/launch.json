@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "Python",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -13,46 +13,10 @@
             "justMyCode": false,
         },
         {
-            "name": "(gdb) Attach",
-            "type": "cppdbg",
+            "type": "lldb",
             "request": "attach",
-            // which python
-            "program": "/data/songlin/.miniconda3/envs/py36/bin/python",
-            "processId": "${command:pickProcess}",
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            // it seems slower when disale loadAll, WHY?
-            "symbolLoadInfo": {
-                "loadAll": false,
-                "exceptionList": "libc10.so;libtorch_cpu.so;libtorch_python.so"
-            },
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-                {
-                    "description": "load .gdbinit",
-                    "text": "source ${workspaceFolder}/.gdbinit"
-                }
-            ],
+            "name": "Attach",
+            "pid": "${command:pickMyProcess}"
         },
-        // {
-        //     "name": "setup.py",
-        //     "type": "python",
-        //     "request": "launch",
-        //     "program": "${workspaceFolder}/setup.py",
-        //     "console": "integratedTerminal",
-        //     "justMyCode": false,
-        //     "env": {
-        //         "DEBUG": "1",
-        //         "LD_LIBRARY_PATH": "/data/songlin/repos/pytorch/build/lib",
-        //         "LIBRARY_PATH": "/data/songlin/repos/pytorch/build/lib",
-        //     },
-        //     "args": [
-        //         "develop",
-        //     ]
-        // },
     ]
 }

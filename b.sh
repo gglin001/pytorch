@@ -10,6 +10,6 @@ git submodule update --init --recursive
 # build torch_python
 
 # DEBUG=1 LD_LIBRARY_PATH=${PWD}/build/lib python setup.py develop
-DEBUG=1 LD_LIBRARY_PATH=/data/songlin/repos/pytorch/build/lib python setup.py develop
+DEBUG=1 LD_LIBRARY_PATH=/Users/allen/gglin001/pytorch/build/lib python setup.py develop
 
 # debug python & cpp

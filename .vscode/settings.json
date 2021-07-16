@@ -1,9 +1,9 @@
 {
     // python path
-    "python.pythonPath": "/data/songlin/.miniconda3/envs/py36/bin/python",
+    "python.pythonPath": "/Users/allen/opt/miniconda3/envs/py36/bin/python",
     "cmake.configureSettings": {
         // CMAKE_PREFIX_PATH is conda (env) lib path
-        "CMAKE_PREFIX_PATH": "/data/songlin/.miniconda3/envs/py36/lib",
+        "CMAKE_PREFIX_PATH": "/Users/allen/opt/miniconda3/envs/py36/lib",
         // CMAKE_INSTALL_PREFIX is ${workspaceFolder}/torch
         "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/torch",
         "BUILD_SHARED_LIBS": "ON",
@@ -14,7 +14,7 @@
         "USE_ROCM": "OFF",
         "USE_FBGEMM": "ON",
         "USE_FAKELOWP": "OFF",
-        "USE_QNNPACK": "OFF",
+        "USE_QNNPACK": "ON",
         "USE_KINETO": "OFF",
         "USE_NATIVE_ARCH": "OFF",
         "USE_NNPACK": "OFF",
@@ -35,13 +35,9 @@
     ],
     // "python.envFile": "${workspaceFolder}/.env",
     "terminal.integrated.env.linux": {
-        "PYTHONPATH": "${workspaceFolder}:${env:PYTHONPATH}",
+        "PYTHONPATH": "${workspaceFolder}",
     },
-    "files.watcherExclude": {
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true,
-        "**/node_modules/*/**": true,
-        "**/.hg/store/**": true,
-        "**/build/**": true,
-    }
+    "terminal.integrated.env.osx": {
+        "PYTHONPATH": "${workspaceFolder}",
+    },
 }
