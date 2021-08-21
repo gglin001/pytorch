@@ -26,7 +26,8 @@
         "USE_DISTRIBUTED": "OFF",
         "USE_GLOG": "ON",
         "BUILD_PYTHON": "ON",
-        "USE_OPENMP": "OFF"
+        "USE_OPENMP": "OFF",
+        "BUILD_TEST": "OFF",
         // if USE_SYSTEM_LIBS may raise error
         // "USE_SYSTEM_LIBS": "ON",
     },
@@ -40,4 +41,8 @@
     "terminal.integrated.env.osx": {
         "PYTHONPATH": "${workspaceFolder}",
     },
+    "clangd.arguments": [
+        "--compile-commands-dir",
+        "${workspaceFolder}/build"
+    ],
 }

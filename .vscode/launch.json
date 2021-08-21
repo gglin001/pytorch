@@ -18,5 +18,13 @@
             "name": "Attach",
             "pid": "${command:pickMyProcess}"
         },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Launch",
+            "program": "${command:cmake.selectLaunchTarget}",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
     ]
 }

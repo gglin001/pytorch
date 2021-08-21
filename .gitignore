@@ -281,3 +281,5 @@ TAGS
 
 # bazel symlinks
 bazel-*
+
+demos/
