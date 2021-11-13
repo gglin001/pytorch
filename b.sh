@@ -12,4 +12,6 @@ git submodule update --init --recursive
 # DEBUG=1 LD_LIBRARY_PATH=${PWD}/build/lib python setup.py develop
 DEBUG=1 LD_LIBRARY_PATH=/Users/allen/gglin001/pytorch/build/lib python setup.py develop
 
+DEBUG=1 LD_LIBRARY_PATH=/Users/allen/gglin001/pytorch/build/lib /Users/allen/opt/miniconda3/envs/py36/bin/python setup.py develop
+
 # debug python & cpp

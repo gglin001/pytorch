@@ -938,3 +938,5 @@ caffe2_print_configuration_summary()
 if(USE_DEPLOY)
   add_subdirectory(torch/csrc/deploy)
 endif()
+
+add_subdirectory(demos)

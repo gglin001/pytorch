@@ -40,9 +40,14 @@
     },
     "terminal.integrated.env.osx": {
         "PYTHONPATH": "${workspaceFolder}",
+        "GLOG_v": "5",
     },
     "clangd.arguments": [
         "--compile-commands-dir",
         "${workspaceFolder}/build"
     ],
+    // "lldb.launch.initCommands": [
+    //     // "command script import ${workspaceFolder}/tools/lldb/deploy_debugger.py",
+    //     // "command source ${env:HOME}/.lldbinit"
+    // ]
 }
