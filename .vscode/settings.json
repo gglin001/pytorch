@@ -1,0 +1,38 @@
+{
+    // used in docker container
+    // https://github.com/gglin001/cpp_demos/blob/master/Dockerfile
+    "cmake.configureSettings": {
+        "CMAKE_PREFIX_PATH": "/opt/conda/envs/py38",
+        "CMAKE_SYSROOT": "/opt/conda/envs/py38/x86_64-conda-linux-gnu/sysroot",
+        "CMAKE_POSITION_INDEPENDENT_CODE": "ON",
+        "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/torch",
+        // "BUILD_CAFFE2": "OFF",
+        // "BUILD_CAFFE2_OPS": "OFF",
+        // "BUILDING_WITH_TORCH_LIBS": "OFF",
+        // "USE_CUDA": "OFF",
+        // "USE_ROCM": "OFF",
+        // "USE_FBGEMM": "ON",
+        // "USE_FAKELOWP": "OFF",
+        // "USE_QNNPACK": "ON",
+        // "USE_KINETO": "OFF",
+        // "USE_NATIVE_ARCH": "OFF",
+        // "USE_NNPACK": "OFF",
+        "USE_MKLDNN": "OFF",
+        // "USE_TENSORPIPE": "OFF",
+        // "USE_XNNPACK": "OFF",
+        // "USE_GLOO": "OFF",
+        // "USE_DISTRIBUTED": "ON",
+        // "USE_GLOG": "ON",
+        "BUILD_PYTHON": "ON",
+        // "USE_OPENMP": "OFF",
+        "BUILD_TEST": "OFF",
+        "PYTHON_EXECUTABLE": "/opt/conda/envs/py38/bin/python",
+    },
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}",
+    ],
+    "terminal.integrated.env.osx": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "GLOG_v": "5",
+    },
+}
