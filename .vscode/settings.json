@@ -22,17 +22,25 @@
         // "USE_XNNPACK": "OFF",
         // "USE_GLOO": "OFF",
         // "USE_DISTRIBUTED": "ON",
-        // "USE_GLOG": "ON",
+        // // need glog v0.4.0
+        "USE_GLOG": "ON",
         "BUILD_PYTHON": "ON",
         // "USE_OPENMP": "OFF",
-        "BUILD_TEST": "OFF",
+        // "BUILD_TEST": "OFF",
+        "BUILD_TEST": "ON",
+        // "USE_LLVM": "ON",
+        "USE_LLVM": "OFF",
         "PYTHON_EXECUTABLE": "/opt/conda/envs/py38/bin/python",
     },
     "python.analysis.extraPaths": [
         "${workspaceFolder}",
     ],
-    "terminal.integrated.env.osx": {
+    "terminal.integrated.env.linux": {
         "PYTHONPATH": "${workspaceFolder}",
-        "GLOG_v": "5",
+        "GLOG_v": "10",
+        "PYTORCH_JIT_LOG_LEVEL": "GRAPH_DEBUG",
+        // "PYTORCH_JIT_LOG_LEVEL": "GRAPH_DUMP",
+        // "PYTORCH_JIT_LOG_LEVEL": "GRAPH_UPDATE",
+        "PYTORCH_JIT_TYPE_VERBOSITY": "3",
     },
 }
