@@ -413,6 +413,8 @@ TEST_F(LazyOpsTest, TestSubScalarInPlace) {
 }
 
 TEST_F(LazyOpsTest, TestMul) {
+  // build/bin/test_lazy --gtest_filter=*TestMul
+  LOG(ERROR) << "start TestMul";
   torch::Tensor a = torch::rand(
       {2, 2}, torch::TensorOptions(torch::kFloat).device(DefaultDevice()));
   torch::Tensor b = torch::rand(

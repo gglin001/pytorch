@@ -769,6 +769,7 @@ LazyGraphExecutor::CompilationResult LazyGraphExecutor::Compile(
     c10::ArrayRef<std::string> devices,
     const SyncTensorCollection& coll,
     PostOrderData* po_data) {
+  LOG(ERROR) << "enter LazyGraphExecutor::Compile";
   auto lowering_ctx = LoweringContext::Create(
       "SyncTensorsGraph",
       coll.device,

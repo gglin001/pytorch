@@ -89,6 +89,7 @@ void initLazyBindings(PyObject* module){
   auto lazy = m.def_submodule("_lazy");
   auto lazy_ts_backend = m.def_submodule("_lazy_ts_backend");
 
+  //_mark_step
   lazy.def(
       "_mark_step",
       // TODO(whc) this API should probably change from vector<string> to
@@ -97,7 +98,9 @@ void initLazyBindings(PyObject* module){
          bool wait) {
         pybind11::gil_scoped_release no_gil;
         auto backend_device = GetDeviceOrCurrent(device_str);
+        LOG(ERROR) << "call SyncLiveTensorsGraph";
         torch::lazy::LazyGraphExecutor::Get()->SyncLiveTensorsGraph(&backend_device, devices, wait);
+        LOG(ERROR) << "call MarkStep";
         torch::lazy::LazyGraphExecutor::Get()->MarkStep(backend_device);
       },
       py::arg("device") = "", py::arg("devices"), py::arg("wait") = true);

@@ -197,6 +197,7 @@ std::vector<torch::lazy::BackendDataPtr> TSBackendImpl::ExecuteComputation(
     torch::lazy::Computation& computation,
     c10::ArrayRef<torch::lazy::BackendDataPtr> arguments,
     const torch::lazy::BackendDevice& device) const {
+  LOG(ERROR) << "enter TSBackendImpl::ExecuteComputation";
   torch::jit::GraphExecutor& graph_executor =
       static_cast<torch::lazy::TSComputation&>(computation).graph_executor();
   std::vector<torch::jit::IValue> stack;

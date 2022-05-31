@@ -46,19 +46,25 @@ def train(log_interval, model, device, train_loader, optimizer, epoch):
         loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
+        print('\n\n------------------ start mark_step()')
         torch._lazy.mark_step()
+        print('------------------ fin mark_step()')
 
         if batch_idx % log_interval == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item()))
 
+        if (batch_idx+1) % 2 == 0:
+            print('exit')
+            exit(0)
+
 
 if __name__ == '__main__':
     bsz = 64
     device = 'lazy'
-    epochs = 14
-    log_interval = 10
+    epochs = 1
+    log_interval = 1
     lr = 1
     gamma = 0.7
     train_kwargs = {'batch_size': bsz}
@@ -68,7 +74,7 @@ if __name__ == '__main__':
                        'pin_memory': True,
                        'shuffle': True,
                        'batch_size': bsz}
-    train_kwargs.update(cuda_kwargs)
+        train_kwargs.update(cuda_kwargs)
 
     transform = transforms.Compose([
         transforms.ToTensor(),
