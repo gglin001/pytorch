@@ -575,6 +575,7 @@ void GraphExecutorImplBase::run(Stack& stack) {
       " inputs, but got only ",
       stack.size());
 
+  LOG(ERROR) << "enter GraphExecutorImplBase::run";
   C10_LOG_API_USAGE_ONCE("torch.graph_executor.run");
   logging::getLogger()->addStatValue(
       logging::runtime_counters::GRAPH_EXECUTOR_INVOCATIONS, 1.0);

@@ -214,6 +214,7 @@ std::vector<torch::lazy::BackendDataPtr> TSBackendImpl::ExecuteComputation(
       stack.emplace_back(ts_data->data());
     }
   }
+  LOG(ERROR) << "start graph_executor.run";
   graph_executor.run(stack);
   std::vector<torch::lazy::BackendDataPtr> results;
   for (torch::jit::IValue component : stack) {

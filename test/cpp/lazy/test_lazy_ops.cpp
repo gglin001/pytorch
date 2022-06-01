@@ -424,7 +424,13 @@ TEST_F(LazyOpsTest, TestMul) {
     torch::Tensor lazy_a = CopyToDevice(a, device);
     torch::Tensor lazy_b = CopyToDevice(b, device);
     torch::Tensor lazy_c = torch::mul(lazy_a, lazy_b);
-    AllClose(c, lazy_c);
+    auto cc = ToCpuTensor(c);
+    // auto lazy_cc = ToCpuTensor(lazy_c);
+    at::print(cc, 99);
+    // LOG(ERROR) << cc;
+    at::print(lazy_c, 99);
+    // LOG(ERROR) << lazy_c;
+    // AllClose(c, lazy_c);
   });
 }
 
@@ -9987,6 +9993,7 @@ TEST_F(LazyOpsTest, TestSigmoidBackward) {
 }
 
 TEST_F(LazyOpsTest, TestLogSigmoidBackward) {
+  // debug
   auto testfn = [&](const std::vector<torch::Tensor>& inputs) -> torch::Tensor {
     return torch::log_sigmoid(inputs[0]);
   };

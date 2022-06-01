@@ -32,6 +32,10 @@
         "USE_LLVM": "OFF",
         "PYTHON_EXECUTABLE": "/opt/conda/envs/py38/bin/python",
     },
+    "[cpp]": {
+        "editor.defaultFormatter": "xaver.clang-format"
+    },
+    "python.linting.flake8Enabled": true,
     "python.analysis.extraPaths": [
         "${workspaceFolder}",
     ],

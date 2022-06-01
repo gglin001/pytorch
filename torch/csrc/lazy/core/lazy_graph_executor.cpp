@@ -913,7 +913,8 @@ std::shared_ptr<LazyGraphExecutor::Async> LazyGraphExecutor::
   }
 
   CompilationResult compile_result = Compile(*tensors, devices, coll, &po_data);
-  if (GRAPH_DUMP_ENABLED) {
+  // if (GRAPH_DUMP_ENABLED) {
+  if (true) {
     auto* comp = compile_result.computation.get();
     LOG(ERROR) << "Add a cached computation with hash " << coll.hash << std::endl;
     LOG(ERROR) << "Add a graph to cache: " << comp->to_string() << std::endl;
