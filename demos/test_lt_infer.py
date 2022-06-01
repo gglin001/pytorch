@@ -26,9 +26,9 @@ model = Net().to(device)
 
 res = model(a, b)
 
-print('\n\n------------------ start print()')
-print(res)
-print('------------------ fin print()')
+# print('\n\n------------------ start print()')
+# print(res)
+# print('------------------ fin print()')
 
 print('\n\n------------------ start mark_step()')
 torch._lazy.mark_step()

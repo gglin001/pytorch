@@ -1,6 +1,6 @@
 {
     // used in docker container
-    // https://github.com/gglin001/cpp_demos/blob/master/Dockerfile
+    // https://github.com/gglin001/Dockerfiles/blob/master/clangdev/Dockerfile
     "cmake.configureSettings": {
         "CMAKE_PREFIX_PATH": "/opt/conda/envs/py38",
         "CMAKE_SYSROOT": "/opt/conda/envs/py38/x86_64-conda-linux-gnu/sysroot",

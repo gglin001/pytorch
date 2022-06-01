@@ -11,7 +11,8 @@ import torch
 import itertools
 import os
 
-debug = os.environ.get("debug_extract_compiled_graph") is not None
+# debug = os.environ.get("debug_extract_compiled_graph") is not None
+debug = True
 
 @dataclasses.dataclass
 class GraphInputMatcher:

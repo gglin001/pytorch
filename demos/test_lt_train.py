@@ -32,10 +32,10 @@ for epoch in range(0, 1):
     loss.backward()
     optimizer.step()
 
-    print('\n\n------------------ start print()')
-    print(loss)
-    print('------------------ fin print()')
+    # print('\n\n------------------ start print()')
+    # print(loss)
+    # print('------------------ fin print()')
 
-    # print('\n\n------------------ start mark_step()')
-    # torch._lazy.mark_step()
-    # print('------------------ fin mark_step()')
+    print('\n\n------------------ start mark_step()')
+    torch._lazy.mark_step()
+    print('------------------ fin mark_step()')
