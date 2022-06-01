@@ -9600,6 +9600,7 @@ TEST_F(LazyOpsTest, TestConv2D) {
 }
 
 TEST_F(LazyOpsTest, TestConv2DBackward) {
+  // debug
   int in_channels = 4;
   int out_channels = 4;
   int kernel_size = 3;

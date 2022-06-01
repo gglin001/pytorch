@@ -72,6 +72,7 @@ c10::optional<OperatorHandle> Dispatcher::findSchema(const OperatorName& overloa
 }
 
 OperatorHandle Dispatcher::findSchemaOrThrow(const char* name, const char* overload_name) {
+  LOG(ERROR) << "Dispatcher::findSchemaOrThrow: " << name << " " << overload_name;
   auto it = findSchema({name, overload_name});
   if (!it.has_value()) {
     // Check if we have ANYTHING; if that's the case, that means you're
@@ -105,6 +106,7 @@ OperatorHandle Dispatcher::findOrRegisterName_(const OperatorName& op_name) {
     return *found;
   }
 
+  LOG(ERROR) << "Dispatcher::RegisterName: " << at::toString(op_name);
   operators_.emplace_back(OperatorName(op_name));
   OperatorHandle handle(--operators_.end());
   operatorLookupTable_.write([&] (ska::flat_hash_map<OperatorName, OperatorHandle>& operatorLookupTable) {

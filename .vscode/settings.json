@@ -6,6 +6,9 @@
         "CMAKE_SYSROOT": "/opt/conda/envs/py38/x86_64-conda-linux-gnu/sysroot",
         "CMAKE_POSITION_INDEPENDENT_CODE": "ON",
         "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/torch",
+        // https://github.com/vadimcn/vscode-lldb/issues/415
+        "CMAKE_C_FLAGS": "-fno-limit-debug-info",
+        "CMAKE_CXX_FLAGS": "-fno-limit-debug-info",
         // "BUILD_CAFFE2": "OFF",
         // "BUILD_CAFFE2_OPS": "OFF",
         // "BUILDING_WITH_TORCH_LIBS": "OFF",
