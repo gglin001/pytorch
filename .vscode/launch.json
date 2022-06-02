@@ -37,6 +37,8 @@
             "args": [
                 // "--gtest_filter=*TestMul",
                 "--gtest_filter=*TestLogSigmoidBackward",
+                // "--gtest_filter=*TestConv2DBackward",
+                // "--gtest_filter=*TestUnaryMin",
             ],
             "initCommands": [
                 "settings set target.disable-aslr false",
