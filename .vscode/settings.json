@@ -11,9 +11,9 @@
         "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/torch",
         // https://github.com/vadimcn/vscode-lldb/issues/415
         "CMAKE_C_FLAGS": "-fno-limit-debug-info",
-        "CMAKE_CXX_FLAGS": "-fno-limit-debug-info",
+        // "CMAKE_CXX_FLAGS": "-fno-limit-debug-info",
         // workaroud for clang-14
-        // "CMAKE_CXX_FLAGS": "-fno-limit-debug-info -Wno-error=bitwise-instead-of-logical",
+        "CMAKE_CXX_FLAGS": "-fno-limit-debug-info -Wno-error=bitwise-instead-of-logical",
         // "BUILD_CAFFE2": "OFF",
         // "BUILD_CAFFE2_OPS": "OFF",
         // "BUILDING_WITH_TORCH_LIBS": "OFF",

@@ -807,6 +807,7 @@ LazyGraphExecutor::CompilationResult LazyGraphExecutor::Compile(
     BuildInputOutputAliases(tensors, coll.indices, lowering_ctx.get());
   }
 
+  // actual compile
   ComputationPtr computation = lowering_ctx->Build();
   // If force_ltc_data is true it means that we did a proper sync and are
   // inside a mark step. If GetTensors was called, force_ltc_data will
@@ -913,8 +914,7 @@ std::shared_ptr<LazyGraphExecutor::Async> LazyGraphExecutor::
   }
 
   CompilationResult compile_result = Compile(*tensors, devices, coll, &po_data);
-  // if (GRAPH_DUMP_ENABLED) {
-  if (true) {
+  if (GRAPH_DUMP_ENABLED) {
     auto* comp = compile_result.computation.get();
     LOG(ERROR) << "Add a cached computation with hash " << coll.hash << std::endl;
     LOG(ERROR) << "Add a graph to cache: " << comp->to_string() << std::endl;

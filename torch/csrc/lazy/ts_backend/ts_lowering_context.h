@@ -103,9 +103,11 @@ class TORCH_API TSLoweringContext : public LoweringContext {
   }
 
   ComputationPtr Build() override {
+    // debug graph_
     for (torch::jit::Value* output : root_tuple_) {
       graph_->block()->registerOutput(output);
     }
+    // debug graph_
     return std::shared_ptr<Computation>(new TSComputation(graph_));
   }
 

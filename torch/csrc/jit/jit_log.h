@@ -118,11 +118,15 @@ TORCH_API std::ostream& operator<<(
       (G)->toString(),                             \
       "</GRAPH_EXPORT>");
 
-#define GRAPH_DUMP_ENABLED \
-  (is_enabled(__FILE__, ::torch::jit::JitLoggingLevels::GRAPH_DUMP))
+// #define GRAPH_DUMP_ENABLED \
+//   (is_enabled(__FILE__, ::torch::jit::JitLoggingLevels::GRAPH_DUMP))
+#define GRAPH_DUMP_ENABLED true
+
 #define GRAPH_UPDATE_ENABLED \
   (is_enabled(__FILE__, ::torch::jit::JitLoggingLevels::GRAPH_UPDATE))
-#define GRAPH_DEBUG_ENABLED \
-  (is_enabled(__FILE__, ::torch::jit::JitLoggingLevels::GRAPH_DEBUG))
+
+#define GRAPH_DEBUG_ENABLED true
+// #define GRAPH_DEBUG_ENABLED \
+//   (is_enabled(__FILE__, ::torch::jit::JitLoggingLevels::GRAPH_DEBUG))
 } // namespace jit
 } // namespace torch

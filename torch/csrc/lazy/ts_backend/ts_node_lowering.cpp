@@ -28,6 +28,7 @@ class TSNodeLowering : public TSNodeLoweringInterface {
   torch::lazy::TSLoweringContext* loctx() { return loctx_; }
 
   bool Lower(const torch::lazy::Node* node) override {
+    LOG(ERROR) << "Lowering torch::lazy::Node: " << node->ToString();
     if (auto* tsnode = dynamic_cast<const torch::lazy::TsNode*>(node)) {
       // First, we call the node lowering function, which exists for newly
       // codegenned or refactored nodes
