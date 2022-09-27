@@ -4,9 +4,8 @@ Utils shared by different modes of quantization (eager/graph)
 import warnings
 import functools
 import torch
-from torch.ao.quantization.quant_type import QuantType, quant_type_to_str
+from torch.ao.quantization.quant_type import QuantType
 from typing import Tuple, Any, Union, Callable, Dict, Optional
-import typing
 from torch.nn.utils.parametrize import is_parametrized
 from collections import OrderedDict
 from inspect import signature
@@ -169,8 +168,7 @@ def get_swapped_custom_module_class(custom_module, custom_module_class_mapping, 
         corresponding observed/quantized custom module class for input custom module instance
     """
     quant_type = get_quant_type(qconfig)
-    quant_type_str = quant_type_to_str(quant_type)
-    class_mapping = custom_module_class_mapping.get(quant_type_str, {})
+    class_mapping = custom_module_class_mapping.get(quant_type, {})
     assert type(custom_module) in class_mapping, "did not find corresponding observed " \
         "module class for {} in mapping: {}".format(type(custom_module), class_mapping)
     return class_mapping[type(custom_module)]
@@ -189,7 +187,10 @@ def activation_is_statically_quantized(qconfig):
     """ Given a qconfig, decide if the activation needs to be
     quantized or not, this includes quantizing to quint8, qint8 and float16
     """
-    return activation_dtype(qconfig) in [torch.quint8, torch.qint8, torch.float16]
+    return (
+        activation_dtype(qconfig) in [torch.quint8, torch.qint8, torch.float16]
+        and (not activation_is_dynamically_quantized(qconfig))
+    )
 
 def activation_is_dynamically_quantized(qconfig):
     """ Given a qconfig, decide if the activation needs to be
@@ -198,8 +199,7 @@ def activation_is_dynamically_quantized(qconfig):
     """
     activation_dtype, _, activation_compute_dtype = \
         get_qconfig_dtypes(qconfig)
-    return activation_dtype == torch.float and \
-        activation_compute_dtype in [torch.quint8, torch.qint8, torch.float16]
+    return activation_compute_dtype in [torch.quint8, torch.qint8, torch.float16]
 
 def activation_is_int8_quantized(qconfig):
     """ Given a qconfig, decide if the activation needs to be
@@ -232,10 +232,11 @@ def op_is_int8_dynamically_quantized(qconfig) -> bool:
     activation_dtype, weight_dtype, activation_compute_dtype = \
         get_qconfig_dtypes(qconfig)
     return (
-        activation_dtype is torch.float and
+        activation_dtype is torch.quint8 and
         # for now, the lines below assume fbgemm or qnnpack
         weight_dtype is torch.qint8 and
         activation_compute_dtype is torch.quint8
+        # TODO(future PR): add is_dynamic
     )
 
 def get_qconfig_dtypes(qconfig):
@@ -254,15 +255,15 @@ def get_quant_type(qconfig):
     weight = qconfig.weight()
     static_dtypes = [torch.quint8, torch.qint8, torch.quint4x2]
     if weight.dtype in static_dtypes:
-        if activation.dtype in static_dtypes:
-            return QuantType.STATIC
-        elif hasattr(activation, 'compute_dtype') and activation.compute_dtype in static_dtypes:
+        if hasattr(activation, 'compute_dtype') and activation.compute_dtype in static_dtypes:
             return QuantType.DYNAMIC
+        elif activation.dtype in static_dtypes:
+            return QuantType.STATIC
         else:
             return QuantType.WEIGHT_ONLY
 
     if weight.dtype == torch.float16:
-        if activation.dtype == torch.float:
+        if hasattr(activation, 'compute_dtype') and activation.compute_dtype in static_dtypes:
             return QuantType.DYNAMIC
         elif activation.dtype == torch.float16:
             return QuantType.STATIC
@@ -411,7 +412,7 @@ def _get_signature_locals(f: Callable, loc: Dict[str, Any]) -> Dict[str, Any]:
     """
     return {k: v for k, v in loc.items() if k in signature(f).parameters}
 
-def _get_default_kwargs(f: Callable) -> typing.OrderedDict[str, Any]:
+def _get_default_kwargs(f: Callable) -> "OrderedDict[str, Any]":
     """ Get all default keyword arguments from function signature
 
     Example::
@@ -431,7 +432,7 @@ def _get_default_kwargs(f: Callable) -> typing.OrderedDict[str, Any]:
             kwargs[name] = {}
     return OrderedDict(kwargs)
 
-def _normalize_kwargs(func: Callable, loc: Dict[str, Any]) -> typing.OrderedDict[str, Any]:
+def _normalize_kwargs(func: Callable, loc: Dict[str, Any]) -> "OrderedDict[str, Any]":
     """ Given a function and local function arguments, normalize the keyword
     arguments by filling in default arguments from function signature
 
@@ -496,35 +497,29 @@ def get_fqn_to_example_inputs(
     root = model
     fqn_to_example_inputs = {}
 
-    class InterceptionModule(type(model)):  # type: ignore[misc]
-        def __call__(self, *args, **kwargs):
-            orig_module_call = torch.nn.Module.__call__
+    def _patched_module_call(self, *args, **kwargs):
+        submodule_example_inputs = list(args).copy()
+        normalized_kwargs = _normalize_kwargs(self.forward, kwargs)
+        # minus 1 to skipping counting `self`
+        num_args = _get_num_pos_args(self.forward) - 1
+        num_to_pop = num_args - len(submodule_example_inputs)
+        while num_to_pop and normalized_kwargs:
+            normalized_kwargs.popitem(last=False)
+            num_to_pop -= 1
+        submodule_example_inputs.extend(normalized_kwargs.values())
+        submodule_example_inputs_tuple = tuple(submodule_example_inputs)
+        fqn = _get_path_of_module(root, self)
+        if fqn is not None:
+            fqn_to_example_inputs[fqn] = submodule_example_inputs_tuple
+        return orig_module_call(self, *args, **kwargs)
 
-            def _patched_module_call(self, *args, **kwargs):
-                submodule_example_inputs = list(args).copy()
-                normalized_kwargs = _normalize_kwargs(self.forward, kwargs)
-                # minus 1 to skipping counting `self`
-                num_args = _get_num_pos_args(self.forward) - 1
-                num_to_pop = num_args - len(submodule_example_inputs)
-                while num_to_pop and normalized_kwargs:
-                    normalized_kwargs.popitem(last=False)
-                    num_to_pop -= 1
-                submodule_example_inputs.extend(normalized_kwargs.values())
-                submodule_example_inputs_tuple = tuple(submodule_example_inputs)
-                fqn = _get_path_of_module(root, self)
-                if fqn is not None:
-                    fqn_to_example_inputs[fqn] = submodule_example_inputs_tuple
-                return orig_module_call(self, *args, **kwargs)
-
-            torch.nn.Module.__call__ = _patched_module_call
-            super().__call__(*args, **kwargs)
-            torch.nn.Module.__call__ = orig_module_call
-
-    original_class = model.__class__
-    model.__class__ = InterceptionModule
-    model(*example_inputs)
-    model.__class__ = original_class
-
+    orig_module_call = torch.nn.Module.__call__
+    torch.nn.Module.__call__ = _patched_module_call
+    try:
+        model(*example_inputs)
+    finally:
+        # restore the module call even if there is an exception
+        torch.nn.Module.__call__ = orig_module_call
     return fqn_to_example_inputs
 
 
