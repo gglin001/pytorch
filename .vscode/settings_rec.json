@@ -1,9 +1,10 @@
 {
-    // used in docker container
-    // https://github.com/gglin001/cpp_demos/blob/master/Dockerfile
+    // https://github.com/gglin001/Dockerfiles/blob/master/pytorch/Dockerfile
     "cmake.configureSettings": {
-        // "CMAKE_PREFIX_PATH": "/opt/conda/envs/py38",
-        "CMAKE_SYSROOT": "/opt/conda/envs/py38/x86_64-conda-linux-gnu/sysroot",
+        "CMAKE_PREFIX_PATH": "/opt/conda/envs/pyenv",
+        "CMAKE_SYSROOT": "/opt/conda/envs/pyenv/x86_64-conda-linux-gnu/sysroot",
+        // "PYTHON_EXECUTABLE": "/opt/conda/envs/pyenv/bin/python",
+        "Python3_EXECUTABLE": "/opt/conda/envs/pyenv/bin/python",
         "CMAKE_POSITION_INDEPENDENT_CODE": "ON",
         "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/torch",
         // "BUILD_CAFFE2": "OFF",
@@ -30,7 +31,6 @@
         "BUILD_TEST": "ON",
         // "USE_LLVM": "ON",
         "USE_LLVM": "OFF",
-        "PYTHON_EXECUTABLE": "/opt/conda/envs/py38/bin/python",
     },
     "python.analysis.extraPaths": [
         "${workspaceFolder}",
