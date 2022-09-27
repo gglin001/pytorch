@@ -38,6 +38,7 @@
         "BUILD_TEST": "ON",
         // "USE_LLVM": "ON",
         "USE_LLVM": "OFF",
+        "BUILD_LAZY_TS_BACKEND": "ON",
         "PYTHON_EXECUTABLE": "/opt/conda/envs/py38/bin/python",
     },
     "[cpp]": {
@@ -52,6 +53,7 @@
         "GLOG_v": "10",
         "PYTORCH_JIT_LOG_LEVEL": ">>graph_helper:>>graph_fuser:>>kernel:>>interface",
         "PYTORCH_JIT_TYPE_VERBOSITY": "3",
+        // "LTC_SAVE_TENSORS_FILE": "LTC_SAVE_TENSORS_FILE.txt",
     },
     "clangd.path": "/opt/conda/envs/py38/bin/clangd",
 }

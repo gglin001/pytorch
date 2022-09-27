@@ -105,6 +105,7 @@ class TORCH_API TSLoweringContext : public LoweringContext {
   ComputationPtr Build() override {
     // debug graph_
     for (torch::jit::Value* output : root_tuple_) {
+      // set output
       graph_->block()->registerOutput(output);
     }
     // debug graph_

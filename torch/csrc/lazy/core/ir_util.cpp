@@ -40,6 +40,7 @@ std::vector<Node*> Util::ComputePostOrder(const Node* node, EmissionMap* emap) {
       (*emap)[node] = kEmitted;
       // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
       post_order.push_back(const_cast<Node*>(node));
+      LOG(ERROR) << "post_order.push_back node: " << node->ToString();
       queue.pop_back();
     } else {
       TORCH_CHECK(it->second == kEmitted);

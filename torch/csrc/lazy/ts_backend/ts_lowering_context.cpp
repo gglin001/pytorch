@@ -45,6 +45,7 @@ torch::jit::Value* TSLoweringContext::GetParameter(BackendDataPtr data) {
   BackendData::Handle handle = ts_data->GetHandle();
   auto it = parameters_map_.find(handle);
   if (it == parameters_map_.end()) {
+    // set input
     torch::jit::Value* param =
         graph_->addInput(c10::str("p", parameters_.size()));
     if (ts_data->scalar.has_value()) {
