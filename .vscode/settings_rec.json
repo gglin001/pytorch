@@ -2,7 +2,7 @@
     // used in docker container
     // https://github.com/gglin001/cpp_demos/blob/master/Dockerfile
     "cmake.configureSettings": {
-        "CMAKE_PREFIX_PATH": "/opt/conda/envs/py38",
+        // "CMAKE_PREFIX_PATH": "/opt/conda/envs/py38",
         "CMAKE_SYSROOT": "/opt/conda/envs/py38/x86_64-conda-linux-gnu/sysroot",
         "CMAKE_POSITION_INDEPENDENT_CODE": "ON",
         "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/torch",
@@ -11,7 +11,7 @@
         // "BUILDING_WITH_TORCH_LIBS": "OFF",
         // "USE_CUDA": "OFF",
         // "USE_ROCM": "OFF",
-        // "USE_FBGEMM": "ON",
+        "USE_FBGEMM": "OFF",
         // "USE_FAKELOWP": "OFF",
         // "USE_QNNPACK": "ON",
         // "USE_KINETO": "OFF",
@@ -38,7 +38,7 @@
     "terminal.integrated.env.linux": {
         "PYTHONPATH": "${workspaceFolder}",
         "GLOG_v": "10",
-        "PYTORCH_JIT_LOG_LEVEL": ">>graph_helper:>>graph_fuser:>>kernel:>>interface",
-        "PYTORCH_JIT_TYPE_VERBOSITY": "3",
+        // "PYTORCH_JIT_LOG_LEVEL": ">>graph_helper:>>graph_fuser:>>kernel:>>interface",
+        // "PYTORCH_JIT_TYPE_VERBOSITY": "3",
     },
 }
