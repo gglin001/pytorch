@@ -2,6 +2,7 @@
 
 #ifdef USE_CUDA
 #include <c10/util/ArrayRef.h>
+#include <c10/util/Optional.h>
 #include <c10/util/irange.h>
 #include <torch/csrc/jit/codegen/cuda/arith.h>
 #include <torch/csrc/jit/codegen/cuda/instrumentation.h>
@@ -85,7 +86,7 @@ void initNvFuserPythonBindings(PyObject* module) {
       .def(
           py::init<nvfuser::FusionInterface*, int>(),
           py::arg("fusion"),
-          py::arg("max_length") = int(256))
+          py::arg("max_length") = int(1024))
       .def_readwrite("ops", &nvfuser::FusionDefinition::ops)
       .def(
           "__enter__",
@@ -1181,15 +1182,15 @@ void initNvFuserPythonBindings(PyObject* module) {
       "permute",
       [](nvfuser::FusionDefinition::Operators& self,
          nvfuser::Tensor arg,
-         std::vector<int64_t>& permutation) -> nvfuser::Tensor {
+         std::vector<int64_t>& dims) -> nvfuser::Tensor {
         nvfuser::FusionDefinition* fd = self.fusion_definition;
         nvfuser::Tensor output = fd->defineTensor();
         self.fusion_definition->defineRecord(new nvfuser::PermuteOpRecord(
-            {fd->recordingState(arg())},
-            {fd->recordingState(output())},
-            permutation));
+            {fd->recordingState(arg())}, {fd->recordingState(output())}, dims));
         return output;
       },
+      py::arg("arg"),
+      py::arg("dims"),
       py::return_value_policy::reference);
 
   nvf_ops.def(
@@ -1212,6 +1213,26 @@ void initNvFuserPythonBindings(PyObject* module) {
       py::arg("original_shape"),
       py::arg("dim"),
       py::return_value_policy::reference);
+  nvf_ops.def(
+      "view",
+      [](nvfuser::FusionDefinition::Operators& self,
+         nvfuser::Tensor arg,
+         std::vector<int64_t>& original_shape,
+         std::vector<int64_t>& new_shape) -> nvfuser::Tensor {
+        nvfuser::FusionDefinition* fd = self.fusion_definition;
+        nvfuser::Tensor output = fd->defineTensor();
+        self.fusion_definition->defineRecord(new nvfuser::ViewOpRecord(
+            {fd->recordingState(arg())},
+            {fd->recordingState(output())},
+            original_shape,
+            new_shape));
+        return output;
+      },
+      py::arg("arg"),
+      py::arg("original_shape"),
+      py::arg("new_shape"),
+      py::return_value_policy::reference);
+
   nvf_ops.def(
       "var",
       [](nvfuser::FusionDefinition::Operators& self,
@@ -1258,6 +1279,60 @@ void initNvFuserPythonBindings(PyObject* module) {
       py::arg("axes"),
       py::arg("correction"),
       py::arg("keepdim") = false,
+      py::return_value_policy::reference);
+  nvf_ops.def(
+      "batch_norm",
+      [](nvfuser::FusionDefinition::Operators& self,
+         nvfuser::Tensor arg,
+         c10::optional<nvfuser::Tensor> weight,
+         c10::optional<nvfuser::Tensor> bias,
+         c10::optional<nvfuser::Tensor> running_mean,
+         c10::optional<nvfuser::Tensor> running_var,
+         nvfuser::Scalar momentum,
+         nvfuser::Scalar eps,
+         bool training,
+         bool channels_last) -> decltype(auto) {
+        FUSER_PERF_SCOPE("Operators.batch_norm");
+        nvfuser::FusionDefinition* fd = self.fusion_definition;
+        nvfuser::Tensor output = fd->defineTensor();
+        nvfuser::Tensor mean = fd->defineTensor();
+        nvfuser::Tensor invstd = fd->defineTensor();
+        auto weight_state = weight.has_value()
+            ? fd->recordingState(weight.value()())
+            : nvfuser::State(0, nvfuser::StateType::None);
+        auto bias_state = bias.has_value()
+            ? fd->recordingState(bias.value()())
+            : nvfuser::State(0, nvfuser::StateType::None);
+        auto running_mean_state = running_mean.has_value()
+            ? fd->recordingState(running_mean.value()())
+            : nvfuser::State(0, nvfuser::StateType::None);
+        auto running_var_state = running_var.has_value()
+            ? fd->recordingState(running_var.value()())
+            : nvfuser::State(0, nvfuser::StateType::None);
+        fd->defineRecord(new nvfuser::BatchNormOpRecord(
+            {fd->recordingState(arg()),
+             weight_state,
+             bias_state,
+             running_mean_state,
+             running_var_state,
+             fd->recordingState(momentum()),
+             fd->recordingState(eps())},
+            {fd->recordingState(output()),
+             fd->recordingState(mean()),
+             fd->recordingState(invstd())},
+            training,
+            channels_last));
+        return std::make_tuple(output, mean, invstd);
+      },
+      py::arg("arg"),
+      py::arg("weight").none(true),
+      py::arg("bias").none(true),
+      py::arg("running_mean").none(true),
+      py::arg("running_var").none(true),
+      py::arg("momentum"),
+      py::arg("eps"),
+      py::arg("training"),
+      py::arg("channels_last") = false,
       py::return_value_policy::reference);
   nvf_ops.def(
       "broadcast_in_dim",

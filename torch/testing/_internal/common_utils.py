@@ -612,15 +612,6 @@ def sanitize_test_filename(filename):
     strip_py = re.sub(r'.py$', '', filename)
     return re.sub('/', r'.', strip_py)
 
-# hack until https://github.com/pytorch/pytorch/issues/82109 is resolved
-def sanitize_if_functorch_test_filename(filename):
-    # absolute filenames must be converted to relative paths, otherwise,
-    # we cannot prepend test-reports/ to it
-    # (e.g. test-reports\\C:\\... on windows is nonsense)
-    if filename.startswith(CI_FUNCTORCH_ROOT):
-        filename = filename[len(CI_PT_ROOT) + 1:]
-    return filename
-
 def lint_test_case_extension(suite):
     succeed = True
     for test_case_or_suite in suite:
@@ -640,10 +631,8 @@ def lint_test_case_extension(suite):
     return succeed
 
 
-def get_report_path(pytest=False):
-    test_filename = inspect.getfile(sys._getframe(2))
-    test_filename = sanitize_if_functorch_test_filename(test_filename)
-    test_filename = sanitize_test_filename(test_filename)
+def get_report_path(argv=UNITTEST_ARGS, pytest=False):
+    test_filename = sanitize_test_filename(argv[0])
     test_report_path = TEST_SAVE_XML + LOG_SUFFIX
     test_report_path = os.path.join(test_report_path, test_filename)
     if pytest:
@@ -875,6 +864,8 @@ TEST_DILL = _check_module_exists('dill')
 
 TEST_LIBROSA = _check_module_exists('librosa') and not IS_ARM64
 
+TEST_OPT_EINSUM = _check_module_exists('opt_einsum')
+
 BUILD_WITH_CAFFE2 = torch.onnx._CAFFE2_ATEN_FALLBACK
 
 # Python 2.7 doesn't have spawn
@@ -908,9 +899,11 @@ TEST_WITH_CROSSREF = os.getenv('PYTORCH_TEST_WITH_CROSSREF', '0') == '1'
 
 
 if TEST_CUDA and 'NUM_PARALLEL_PROCS' in os.environ:
-    num_procs = int(os.getenv("NUM_PARALLEL_PROCS", "3"))
+    num_procs = int(os.getenv("NUM_PARALLEL_PROCS", "2"))
     # other libraries take up about 11% of space per process
-    torch.cuda.set_per_process_memory_fraction(round(1 / num_procs - .11, 2))
+    # + leave some additional buffer e.g., for runtime compilation
+    # or allocations outside of the caching allocator
+    torch.cuda.set_per_process_memory_fraction(round(1 / num_procs - .15, 2))
 
 
 def skipIfCrossRef(fn):
@@ -933,14 +926,17 @@ TEST_WITH_TORCHINDUCTOR = os.getenv('PYTORCH_TEST_WITH_INDUCTOR') == '1'
 TEST_WITH_TORCHDYNAMO = os.getenv('PYTORCH_TEST_WITH_DYNAMO') == '1' or TEST_WITH_TORCHINDUCTOR
 
 if TEST_WITH_TORCHDYNAMO:
-    import torchdynamo
+    import torch._dynamo
     import logging
-    torchdynamo.config.log_level = logging.ERROR
+    torch._dynamo.config.log_level = logging.ERROR
     # Do not spend time on helper functions that are called with different inputs
-    torchdynamo.config.cache_size_limit = 8
+    torch._dynamo.config.cache_size_limit = 8
+    # TODO: Remove this; this is grandfathered in because we suppressed errors
+    # on test suite previously
+    torch._dynamo.config.suppress_errors = True
 
 
-def skipIfTorchDynamo(msg="test doesn't currently work with torchdynamo"):
+def skipIfTorchDynamo(msg="test doesn't currently work with dynamo"):
     def decorator(fn):
         if not isinstance(fn, type):
             @wraps(fn)
@@ -1373,6 +1369,8 @@ def freeze_rng_state():
         #
         # In the long run torch.cuda.set_rng_state should probably be
         # an operator.
+        #
+        # NB: Mode disable is to avoid running cross-ref tests on thes seeding
         with no_dispatch(), disable_functorch():
             if torch.cuda.is_available():
                 torch.cuda.set_rng_state(cuda_rng_state)
@@ -1436,6 +1434,7 @@ class CudaNonDefaultStream():
         for d in range(torch.cuda.device_count()):
             self.beforeStreams.append(torch.cuda.current_stream(d))
             deviceStream = torch.cuda.Stream(device=d)
+            self.beforeStreams[-1].synchronize()
             torch._C._cuda_setStream(deviceStream._cdata)
         torch._C._cuda_setDevice(beforeDevice)
 
@@ -1474,6 +1473,7 @@ class CudaMemoryLeakCheck():
             #   because the driver will always have some bytes in use (context size?)
             if caching_allocator_mem_allocated > 0:
                 gc.collect()
+                torch._C._cuda_clearCublasWorkspaces()
                 torch.cuda.empty_cache()
                 break
 
@@ -1495,6 +1495,8 @@ class CudaMemoryLeakCheck():
         discrepancy_detected = False
         num_devices = torch.cuda.device_count()
         for i in range(num_devices):
+            # avoid counting cublasWorkspace allocations
+            torch._C._cuda_clearCublasWorkspaces()
             caching_allocator_mem_allocated = torch.cuda.memory_allocated(i)
 
             if caching_allocator_mem_allocated > self.caching_allocator_befores[i]:
@@ -1517,18 +1519,31 @@ class CudaMemoryLeakCheck():
         torch.cuda.empty_cache()
 
         for i in range(num_devices):
-            caching_allocator_mem_allocated = torch.cuda.memory_allocated(i)
-            bytes_free, bytes_total = torch.cuda.mem_get_info(i)
-            driver_mem_allocated = bytes_total - bytes_free
 
-            caching_allocator_discrepancy = False
-            driver_discrepancy = False
+            discrepancy_detected = True
 
-            if caching_allocator_mem_allocated > self.caching_allocator_befores[i]:
-                caching_allocator_discrepancy = True
+            # Query memory multiple tiems to ensure leak was not transient
+            for n in range(3):
+                caching_allocator_mem_allocated = torch.cuda.memory_allocated(i)
+                bytes_free, bytes_total = torch.cuda.mem_get_info(i)
+                driver_mem_allocated = bytes_total - bytes_free
 
-            if driver_mem_allocated > self.driver_befores[i]:
-                driver_discrepancy = True
+                caching_allocator_discrepancy = False
+                driver_discrepancy = False
+
+                if caching_allocator_mem_allocated > self.caching_allocator_befores[i]:
+                    caching_allocator_discrepancy = True
+
+                if driver_mem_allocated > self.driver_befores[i]:
+                    driver_discrepancy = True
+
+                if not(caching_allocator_discrepancy or driver_discrepancy):
+                    # Leak was false positive, exit loop
+                    discrepancy_detected = False
+                    break
+
+            if not discrepancy_detected:
+                continue
 
             if caching_allocator_discrepancy and not driver_discrepancy:
                 # Just raises a warning if the leak is not validated by the
@@ -1562,12 +1577,7 @@ class CudaMemoryLeakCheck():
                     self.driver_befores[i],
                     driver_mem_allocated)
 
-                # See #62533
-                # ROCM: Sometimes the transient memory is reported as leaked memory
-                if TEST_WITH_ROCM:
-                    warnings.warn(msg)
-                else:
-                    raise RuntimeError(msg)
+                raise RuntimeError(msg)
 
 @contextmanager
 def skip_exception_type(exc_type):
@@ -1661,8 +1671,23 @@ def check_if_enable(test: unittest.TestCase):
                         "windows": IS_WINDOWS,
                         "linux": IS_LINUX,
                         "rocm": TEST_WITH_ROCM,
-                        "asan": TEST_WITH_ASAN
+                        "asan": TEST_WITH_ASAN,
+                        "dynamo": TEST_WITH_TORCHDYNAMO,
                     }
+
+                    invalid_platforms = list(filter(lambda p: p not in platform_to_conditional, platforms))
+                    if len(invalid_platforms) > 0:
+                        invalid_plats_str = ", ".join(invalid_platforms)
+                        valid_plats = ", ".join(platform_to_conditional.keys())
+
+                        print(f"Test {disabled_test} is disabled for some unrecognized ",
+                              f"platforms: [{invalid_plats_str}]. Please edit issue {issue_url} to fix the platforms ",
+                              "assigned to this flaky test, changing \"Platforms: ...\" to a comma separated ",
+                              f"subset of the following (or leave it blank to match all platforms): {valid_plats}")
+
+                        # Sanitize the platforms list so that we continue to disable the test for any valid platforms given
+                        platforms = list(filter(lambda p: p in platform_to_conditional, platforms))
+
                     if platforms == [] or any([platform_to_conditional[platform] for platform in platforms]):
                         skip_msg = f"Test is disabled because an issue exists disabling it: {issue_url}" \
                             f" for {'all' if platforms == [] else ''}platform(s) {', '.join(platforms)}. " \
@@ -2003,13 +2028,13 @@ class TestCase(expecttest.TestCase):
         if TEST_WITH_TORCHDYNAMO:
             # TorchDynamo optimize annotation
             if TEST_WITH_TORCHINDUCTOR:
-                super_run = torchdynamo.optimize("inductor")(super().run)
+                super_run = torch._dynamo.optimize("inductor")(super().run)
             else:
-                super_run = torchdynamo.optimize("eager")(super().run)
+                super_run = torch._dynamo.optimize("eager")(super().run)
             super_run(result=result)
 
             # TODO - Reset for each test slows down testing significantly.
-            # torchdynamo.reset()
+            # torch._dynamo.reset()
         else:
             super().run(result=result)
 
@@ -2477,7 +2502,7 @@ class TestCase(expecttest.TestCase):
             # This emulates unittest.TestCase's behavior if a custom message passed and
             # TestCase.longMessage (https://docs.python.org/3/library/unittest.html#unittest.TestCase.longMessage)
             # is True (default)
-            msg=(lambda generated_msg: f"{generated_msg} : {msg}") if isinstance(msg, str) and self.longMessage else msg,
+            msg=(lambda generated_msg: f"{generated_msg}\n{msg}") if isinstance(msg, str) and self.longMessage else msg,
         )
 
     def assertNotEqual(self, x, y, msg: Optional[str] = None, *,                                       # type: ignore[override]
@@ -2920,13 +2945,6 @@ def noncontiguous_like(t):
     if not t.is_contiguous():
         return t
 
-    # Special-cases 0-dim tensors
-    zero_dim = t.ndim == 0
-    if zero_dim:
-        t = t.unsqueeze(0)
-
-    result = torch.repeat_interleave(t.detach(), 2, dim=-1)
-
     # Choose a "weird" value that won't be accessed
     if t.dtype.is_floating_point or t.dtype.is_complex:
         value = math.nan
@@ -2935,14 +2953,10 @@ def noncontiguous_like(t):
     else:
         value = 12
 
-    if zero_dim:
-        result[0] = value
-        result.set_(result.storage(), 1, (), ())
-    else:
-        result[..., 1::2] = value
-        strides = list(result.stride())
-        strides[-1] *= 2
-        result.set_(result.storage(), result.storage_offset(), t.size(), stride=tuple(strides))
+    result = t.new_empty(t.shape + (2,))
+    result[..., 0] = value
+    result[..., 1] = t.detach()
+    result = result[..., 1]
     result.requires_grad_(t.requires_grad)
     return result
 

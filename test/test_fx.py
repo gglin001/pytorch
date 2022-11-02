@@ -2791,7 +2791,7 @@ class TestFX(JitTestCase):
 
     def test_profiler_ranges_side_effect(self):
         g = torch.fx.Graph()
-        handle = g.call_function(torch.ops.profiler._record_function_enter, ('test_range',))
+        handle = g.call_function(torch.ops.profiler._record_function_enter_new, ('test_range',))
         g.call_function(torch.ops.profiler._record_function_exit, (handle,))
         g.output(None)
 
@@ -2801,7 +2801,7 @@ class TestFX(JitTestCase):
                 found_targets.setdefault(node.target)
         self.assertEqual(
             list(found_targets.keys()),
-            [torch.ops.profiler._record_function_enter, torch.ops.profiler._record_function_exit]
+            [torch.ops.profiler._record_function_enter_new, torch.ops.profiler._record_function_exit]
         )
 
         g.eliminate_dead_code()
@@ -2811,7 +2811,7 @@ class TestFX(JitTestCase):
                 found_targets.setdefault(node.target)
         self.assertEqual(
             list(found_targets.keys()),
-            [torch.ops.profiler._record_function_enter, torch.ops.profiler._record_function_exit]
+            [torch.ops.profiler._record_function_enter_new, torch.ops.profiler._record_function_exit]
         )
 
     def test_ast_rewriter_wrapped_via_decorator(self):
@@ -3931,6 +3931,8 @@ class TestFunctionalTracing(JitTestCase):
         "max_unpool1d": PROXY_ITERATED,
         "max_unpool2d": PROXY_ITERATED,
         "max_unpool3d": PROXY_ITERATED,
+        "fold": PROXY_ITERATED,
+        "unfold": PROXY_ITERATED,
 
         "adaptive_max_pool1d_with_indices": ARG_TYPE_MISMATCH,
         "fractional_max_pool2d_with_indices": ARG_TYPE_MISMATCH,
@@ -3955,7 +3957,6 @@ class TestFunctionalTracing(JitTestCase):
         "embedding": CONTROL_FLOW,
         "embedding_bag": CONTROL_FLOW,
         "feature_alpha_dropout": CONTROL_FLOW,
-        "fold": CONTROL_FLOW,
         "gaussian_nll_loss": CONTROL_FLOW,
         "glu": CONTROL_FLOW,
         "grid_sample": CONTROL_FLOW,
@@ -3992,7 +3993,6 @@ class TestFunctionalTracing(JitTestCase):
         "threshold": CONTROL_FLOW,
         "triplet_margin_loss": CONTROL_FLOW,
         "triplet_margin_with_distance_loss": CONTROL_FLOW,
-        "unfold": CONTROL_FLOW,
         "upsample": CONTROL_FLOW,
 
         "upsample_bilinear": INTERPOLATE_ARGS_CONFLICT,

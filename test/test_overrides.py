@@ -1175,7 +1175,7 @@ class TestTorchFunctionMode(TestCase):
             self.assertEqual(torch.mm(x, x), -1)
             self.assertEqual(bar(x), 1)
             self.assertRaisesRegex(
-                TypeError, r'SubTensor.+TorchFunctionStackMode',
+                TypeError, r'SubTensor',
                 lambda: self.assertEqual(torch.max(x, x)))
 
     def test_with_mode(self):
@@ -1248,7 +1248,7 @@ class TestTorchFunctionMode(TestCase):
                 return func(args, kwargs)
 
         x = torch.tensor(5.)
-        with self.assertRaisesRegex(RuntimeError, "should be a normal method not a class method"):
+        with self.assertRaisesRegex(RuntimeError, "classmethod is not supported, please make it a plain method"):
             with A():
                 x + x
 
@@ -1299,6 +1299,30 @@ class TestTorchFunctionMode(TestCase):
         self.assertTrue(all_same_mode([x, x, x]))
         self.assertFalse(all_same_mode([x, None]))
         self.assertFalse(all_same_mode([x, y]))
+
+    def test_nested_modes_with_python_has_torch_function(self):
+        called = []
+
+        class A(TorchFunctionMode):
+            def __torch_function__(self, func, types, args=(), kwargs=None):
+                called.append("A")
+                kwargs = {} if kwargs is None else kwargs
+                return func(*args, **kwargs)
+
+        class B(TorchFunctionMode):
+            def __torch_function__(self, func, types, args=(), kwargs=None):
+                called.append("B")
+                kwargs = {} if kwargs is None else kwargs
+                return func(*args, **kwargs)
+
+        x = torch.randn(3, 4)
+        with A():
+            with B():
+                y = bar(x)
+
+        self.assertEqual(y, x)
+        self.assertEqual(called, ["B", "A"])
+
 
     def test_reentrant_mode_idiom(self):
         log = []
