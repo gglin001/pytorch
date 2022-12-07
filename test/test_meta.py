@@ -15,7 +15,6 @@ from torch.testing._internal.common_utils import (
     suppress_warnings,
     TEST_WITH_ASAN,
     run_tests,
-    skipIfSlowGradcheckEnv,
     dtype_abbrs
 )
 from torch.testing._internal.common_device_type import (
@@ -53,7 +52,6 @@ b8 = torch.bool
 u8 = torch.uint8
 
 
-@skipIfSlowGradcheckEnv
 class TestMetaConverter(TestCase):
     def assertSameVersionCounter(self, m1, m2):
         # Cannot easily test m1 and m2 have same storage due to
@@ -296,61 +294,24 @@ CHECK_STRIDES_SKIPS = {
     aten._fft_c2r.default,
     aten._fft_r2c.default,
     aten._linalg_svd.default,
-    aten._scaled_dot_product_attention_forward.default,
-    aten.add.Tensor,
-    aten.atan2.default,
     aten.binary_cross_entropy.default,
-    aten.bitwise_and.Tensor,
-    aten.bitwise_left_shift.Tensor,
-    aten.bitwise_or.Tensor,
-    aten.bitwise_right_shift.Tensor,
-    aten.bitwise_xor.Tensor,
-    aten.clamp_max.Tensor,
-    aten.clamp_min.Tensor,
     aten.complex.default,
     aten.copysign.Tensor,
     aten.div.Tensor_mode,
-    aten.div.Tensor,
-    aten.eq.Tensor,
     aten.floor_divide.default,
-    aten.fmax.default,
-    aten.fmin.default,
-    aten.fmod.Tensor,
-    aten.gcd.default,
-    aten.ge.Tensor,
-    aten.gt.Tensor,
     aten.heaviside.default,
-    aten.hypot.default,
-    aten.igamma.default,
-    aten.igammac.default,
-    aten.lcm.default,
-    aten.le.Tensor,
     aten.lerp.Scalar,
     aten.lerp.Tensor,
     aten.logical_and.default,
     aten.logical_or.default,
     aten.logical_xor.default,
-    aten.lt.Tensor,
-    aten.maximum.default,
-    aten.minimum.default,
-    aten.mul.Tensor,
-    aten.ne.Tensor,
-    aten.nextafter.default,
     aten.pow.Scalar,
-    aten.pow.Tensor_Scalar,
-    aten.pow.Tensor_Tensor,
     aten.prelu.default,
-    aten.remainder.Tensor,
-    aten.rsub.Tensor,
     aten.special_xlog1py.default,
-    aten.special_zeta.default,
-    aten.sub.Tensor,
-    aten.where.self,
     aten.xlogy.Tensor,
 
     # channel_last and channel_last_3d related failures
     aten.convolution.default,
-    aten.upsample_bilinear2d.vec,
 
     # following ops fails if include_storage_offset = True, but these are a bit edge casey
     # we should still fix them, leaving them here for tracking.
@@ -506,7 +467,7 @@ def run_meta_crossref(
         # they're not tested outside of gradcheck which only checks
         # torch.float64 and torch.complex128 (which this second one
         # often skipped as well).
-        raise unittest.SkipTest("Original OpInfo is broken")
+        raise unittest.SkipTest("Original OpInfo is broken") from e
 
 
     # TODO: also handle cases where func raise an exception
@@ -660,7 +621,6 @@ meta_function_expected_failures = {
     torch.linalg.eig : {f64, f32, c128, c64},
     torch.linalg.eigvals : {f64, f32, c128, c64},
     torch.linalg.lstsq : {f64, f32, c128, c64},
-    torch.Tensor.conj_physical_: {c128, c32, c64},
 }
 
 meta_function_expected_failures_only_outplace = {
@@ -750,6 +710,7 @@ meta_function_device_skips = defaultdict(dict)
 
 meta_function_device_expected_failures['cpu'] = {
     torch.native_batch_norm: {bf16},
+    torch._native_batch_norm_legit: {bf16},
     torch.native_layer_norm: {bf16},
 }
 
@@ -783,8 +744,8 @@ meta_function_device_expected_failures_only_outplace['cuda'] = {
 }
 
 meta_function_device_skips['cpu'] = {
-    torch.narrow_copy: {b8, bf16, c128, c32, c64, f16, f32, f64, i16, i32, i64, i8, u8},
     torch.native_batch_norm: {f32, f64},
+    torch._native_batch_norm_legit: {f32, f64},
 }
 
 meta_function_device_skips['cuda'] = {
@@ -932,7 +893,6 @@ meta_dispatch_expected_failures = {
     aten.unique_consecutive.default : {i8, f64, i64, bf16, f32, i32, b8, i16, u8},
     aten.unique_dim.default : {i8, f64, i64, bf16, f32, i32, b8, i16, u8},
     aten.upsample_nearest3d.vec : {bf16, f32, f64, u8},
-    aten.conj_physical_.default: {c128, c32, c64},
 }
 
 # these sometimes pass and sometimes fail
@@ -955,6 +915,13 @@ meta_dispatch_skips = {
 # For CompositeImplicitAutograd functions that fail before hitting the Mode
 meta_dispatch_early_skips = set({
     torch.Tensor.float_power_,
+    # Errors out in one of the tests, while ProxyTensor passes...
+    torch.Tensor.cumsum_,
+})
+
+meta_inplace_skips = set({
+    # Errors out in one of the tests, while ProxyTensor passes...
+    torch.Tensor.cumsum_,
 })
 
 meta_dispatch_device_expected_failures = defaultdict(dict)
@@ -962,6 +929,8 @@ meta_dispatch_device_skips = defaultdict(dict)
 
 meta_dispatch_device_expected_failures['cpu'] = {
     aten.native_batch_norm.default: {bf16},
+    aten._native_batch_norm_legit.default: {bf16},
+    aten._native_batch_norm_legit.no_stats: {bf16},
     aten.native_layer_norm.default: {bf16},
 }
 
@@ -1007,6 +976,8 @@ meta_dispatch_device_expected_failures['cuda'] = {
 meta_dispatch_device_skips['cpu'] = {
     aten._embedding_bag_forward_only.default: {f16, f32, f64},
     aten.native_batch_norm.default: {f32, f64},
+    aten._native_batch_norm_legit.default: {f32, f64},
+    aten._native_batch_norm_legit.no_stats: {f32, f64},
 }
 
 meta_dispatch_device_skips['cuda'] = {
@@ -1119,7 +1090,6 @@ class MetaCrossRefDispatchMode(torch.utils._python_dispatch.TorchDispatchMode):
 # inconsistencies between CUDA and CPU, and running on CUDA makes it easier
 # to ignore the CPU case when inconsistencies arise.  Ideally we deal
 # with the inconsistencies but this takes time.
-@skipIfSlowGradcheckEnv
 class TestMeta(TestCase):
     # Copies inputs to inplace operations to avoid inplace modifications
     #   to leaves requiring gradient
@@ -1156,6 +1126,8 @@ class TestMeta(TestCase):
         func = op.get_inplace()
         if not func:
             self.skipTest("No inplace variable for this op")
+        if func in meta_inplace_skips:
+            self.skipTest("Skipped")
         func = self._get_safe_inplace(func)
         samples = op.sample_inputs(device, dtype, requires_grad=False)
         for sample_input in samples:
@@ -1322,6 +1294,17 @@ class TestMeta(TestCase):
             self.assertEqual(ref_out[0].stride(), meta_out[0].stride())
             self.assertEqual(ref_out[1].size(), meta_out[1].size())
             self.assertEqual(ref_out[1].stride(), meta_out[1].stride())
+
+    def test_cdist_forward(self, device):
+        to_meta = MetaConverter()
+        x1 = torch.rand([3, 2], device=device)
+        x2 = torch.rand([2, 2], device=device)
+        p = 2.0
+        for compute_mode in (None, 1, 2):
+            ref = aten._cdist_forward.default(x1, x2, p, compute_mode)
+            res = aten._cdist_forward.default(to_meta(x1), to_meta(x2), p, compute_mode)
+            self.assertEqual(res.device.type, 'meta')
+            self.assertEqual(ref.shape, res.shape)
 
     # opinfo test is using aten.fill_, it's not testing aten.fill
     @onlyCUDA

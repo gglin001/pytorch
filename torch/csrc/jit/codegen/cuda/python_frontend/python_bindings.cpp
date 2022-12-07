@@ -390,7 +390,7 @@ void initNvFuserPythonBindings(PyObject* module) {
   NVFUSER_PYTHON_BINDING_UNARY_OP("neg", neg)
   NVFUSER_PYTHON_BINDING_UNARY_OP("bitwise_not", bitwise_not)
   NVFUSER_PYTHON_BINDING_UNARY_OP("relu", relu)
-  NVFUSER_PYTHON_BINDING_UNARY_OP("rand_like", randlike)
+  NVFUSER_PYTHON_BINDING_UNARY_OP("rand_like", rand_like)
   NVFUSER_PYTHON_BINDING_UNARY_OP("reciprocal", reciprocal)
   NVFUSER_PYTHON_BINDING_UNARY_OP("round", round)
   NVFUSER_PYTHON_BINDING_UNARY_OP("rsqrt", rsqrt)
@@ -1210,7 +1210,6 @@ void initNvFuserPythonBindings(PyObject* module) {
       py::arg("arg"),
       py::arg("dims"),
       py::return_value_policy::reference);
-
   nvf_ops.def(
       "squeeze",
       [](nvfuser::FusionDefinition::Operators& self,
@@ -1250,7 +1249,25 @@ void initNvFuserPythonBindings(PyObject* module) {
       py::arg("original_shape"),
       py::arg("new_shape"),
       py::return_value_policy::reference);
-
+  nvf_ops.def(
+      "full",
+      [](nvfuser::FusionDefinition::Operators& self,
+         std::vector<int64_t>& size,
+         nvfuser::Scalar arg,
+         Nvf::DataType dtype) -> nvfuser::Tensor {
+        nvfuser::FusionDefinition* fd = self.fusion_definition;
+        nvfuser::Tensor output = fd->defineTensor();
+        fd->defineRecord(new nvfuser::FullOpRecord(
+            {fd->recordingState(arg())},
+            {fd->recordingState(output())},
+            size,
+            dtype));
+        return output;
+      },
+      py::arg("size"),
+      py::arg("arg"),
+      py::arg("dtype"),
+      py::return_value_policy::reference);
   nvf_ops.def(
       "var",
       [](nvfuser::FusionDefinition::Operators& self,
