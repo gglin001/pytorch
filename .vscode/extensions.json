@@ -8,6 +8,7 @@
     "vadimcn.vscode-lldb",
     "llvm-vs-code-extensions.vscode-clangd",
     "tamasfe.even-better-toml",
-    "deckerio.breakpointio"
+    "deckerio.breakpointio",
+    "omnilib.ufmt"
   ]
 }
