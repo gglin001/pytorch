@@ -336,6 +336,7 @@ def convert_frame_assert(
             unimplemented("cache_size_limit reached")
 
         if not has_tensor_in_frame(frame):
+            print(f"frame skipped: {frame.f_code.co_name}")
             return None
 
         global initial_grad_state
@@ -452,8 +453,9 @@ def _compile(
         output_codes.add(out_code)
 
         def log_bytecode(prefix, name, filename, line_no, code):
-            if bytecode_log.isEnabledFor(logging.DEBUG):
-                bytecode_log.debug(
+            # if bytecode_log.isEnabledFor(logging.DEBUG):
+            if 1:
+                bytecode_log.error(
                     format_bytecode(prefix, name, filename, line_no, code)
                 )
 
@@ -526,13 +528,18 @@ def convert_frame(compiler_fn: CompilerFn, hooks: Hooks):
         try:
             result = inner_convert(frame, cache_size, hooks, frame_state)
             counters["frames"]["ok"] += 1
+            # raise NotImplementedError("aaa")
+            # import dis; [print(x) for x in list(dis.get_instructions(result.code))]
+            # result is GuardedCode;
             return result
         except (NotImplementedError, Unsupported):
+            # print 会走到这里
             log.info("converting frame raised unsupported, leaving it unconverted")
         except Exception:
             if not config.suppress_errors:
                 raise
             log.info("converting frame raised error, suppressing error")
+        # None means fallback tp eager-mode
         return None
 
     _convert_frame._torchdynamo_orig_callable = compiler_fn  # type: ignore[attr-defined]

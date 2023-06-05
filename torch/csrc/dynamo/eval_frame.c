@@ -117,6 +117,8 @@ THPPyInterpreterFrame* THPPyInterpreterFrame_New(_PyInterpreterFrame* frame) {
   } else {                                                              \
   }
 
+// #define TORCHDYNAMO_DEBUG
+
 #ifdef TORCHDYNAMO_DEBUG
 
 #define DEBUG_CHECK(cond) CHECK(cond)

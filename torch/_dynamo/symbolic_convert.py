@@ -314,6 +314,7 @@ def generic_jump(truth_fn: typing.Callable[[object], bool], push: bool):
             )
             self.pop()
 
+            # if ?
             if_next = self.create_call_resume_at(self.next_instruction)
             push and self.push(value)
             if_jump = self.create_call_resume_at(inst.target)
@@ -555,7 +556,8 @@ class InstructionTranslatorBase(Checkpointable[InstructionTranslatorGraphState])
             and inner_fn._dynamo_forbidden
         ):
             raise AssertionError(f"Attempt to trace forbidden callable {inner_fn}")
-        self.push(fn.call_function(self, args, kwargs))
+        fn_res = fn.call_function(self, args, kwargs)
+        self.push(fn_res)
 
     def update_locals_and_stack(self, oldvar: VariableTracker, newvar: VariableTracker):
         def repl(v: VariableTracker):
@@ -680,6 +682,7 @@ class InstructionTranslatorBase(Checkpointable[InstructionTranslatorGraphState])
             exc.real_stack = real_stack  # type: ignore[attr-defined]
             raise
 
+        self.output: OutputGraph
         # generate code from checkpoint
         assert not self.output.output_instructions
         assert self.checkpoint is not None
@@ -1618,6 +1621,8 @@ class InstructionTranslatorBase(Checkpointable[InstructionTranslatorGraphState])
     BINARY_MODULO = stack_op(operator.mod)
     BINARY_REMAINDER = stack_op(operator.mod)
     BINARY_ADD = stack_op(operator.add)
+    # def BINARY_ADD(self, inst):
+    #     raise Unsupported("BINARY_ADD")
     BINARY_SUBTRACT = stack_op(operator.sub)
     BINARY_SUBSCR = break_graph_if_unsupported(push=1)(stack_op(operator.getitem))
     BINARY_LSHIFT = stack_op(operator.lshift)
@@ -2086,6 +2091,10 @@ class InstructionTranslator(InstructionTranslatorBase):
             tuple(null_idxes),
         )
 
+        print(f'\n\n{name}, new_code')
+        import dis; [print(x) for x in list(dis.get_instructions(new_code))]
+        print(f'\n\n')
+        # a new call_function
         if new_code.co_freevars:
             cg.make_function_with_closure(name, new_code, True, stack_len)
         else:
@@ -2097,6 +2106,10 @@ class InstructionTranslator(InstructionTranslatorBase):
         cg.extend_output([cg.create_load(k) for k in argnames])
         cg.extend_output(create_call_function(nargs, False))
         cg.append_output(create_instruction("RETURN_VALUE"))
+        # print(f'\n\n{name}')
+        print(f'call insts')
+        [print(x) for x in cg.get_instructions()]
+        print(f'\n\n')
         return cg.get_instructions()
 
     def RETURN_VALUE(self, inst):
@@ -2207,6 +2220,7 @@ class InliningInstructionTranslator(InstructionTranslatorBase):
             suffix = f"\n{dis.Bytecode(code).dis()}"
         log.debug("INLINING %s%s", code, suffix)
 
+        # parent is used
         tracer: InliningInstructionTranslator
         if is_generator(code):
             tracer = InliningGeneratorInstructionTranslator(

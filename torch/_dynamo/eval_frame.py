@@ -283,11 +283,19 @@ class _TorchDynamoContext:
             dynamic_ctx = enable_dynamic(self.dynamic, self.export)
             dynamic_ctx.__enter__()
             try:
+                # finally run transformed function
+                # f11 here for debug transformed byte code
                 return fn(*args, **kwargs)
             finally:
                 set_eval_frame(prior)
                 dynamic_ctx.__exit__(None, None, None)
                 backend_ctx.__exit__(None, None, None)
+
+            # res = fn(*args, **kwargs)
+            # set_eval_frame(prior)
+            # dynamic_ctx.__exit__(None, None, None)
+            # backend_ctx.__exit__(None, None, None)
+            # return res
 
         # hooks to properly handle inlining
         if isinstance(self, DisableContext):
@@ -417,6 +425,7 @@ def catch_errors_wrapper(callback, hooks: Hooks):
             log.debug("skipping %s %s", frame.f_code.co_name, frame.f_code.co_filename)
             return None
         if frame.f_code.co_filename == "<string>" and frame.f_code.co_name == "__new__":
+            log.debug("skipping %s %s", frame.f_code.co_name, frame.f_code.co_filename)
             # nametuple constructor
             return None
         if config.optimize_ddp:

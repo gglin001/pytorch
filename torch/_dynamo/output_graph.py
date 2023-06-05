@@ -279,6 +279,7 @@ class OutputGraph(Checkpointable[OutputGraphState]):
 
         # Not checkpointed
         self.compiler_fn: CompilerFn = compiler_fn
+        # f_globals
         self.root_globals = f_globals
         self.root_tx = root_tx
         from torch._dynamo.symbolic_convert import InstructionTranslatorBase
@@ -701,6 +702,10 @@ class OutputGraph(Checkpointable[OutputGraphState]):
         for block in reversed(tx.block_stack):
             block.exit(tx)
 
+        from .symbolic_convert import InstructionTranslator
+
+        tx: InstructionTranslator
+
         self.cleanup_graph()
         tx.prune_dead_locals()
         stack_values = list(tx.stack)
@@ -856,6 +861,11 @@ class OutputGraph(Checkpointable[OutputGraphState]):
         assert_no_fake_params_or_buffers(gm)
         compiled_fn = self.call_user_compiler(gm)
         compiled_fn = disable(compiled_fn)
+
+        print(f"\n{name}:")
+        import dis
+        [print(x) for x in list(dis.get_instructions(compiled_fn))]
+        print(f"")
 
         counters["stats"]["unique_graphs"] += 1
         self.install_global(name, compiled_fn)
