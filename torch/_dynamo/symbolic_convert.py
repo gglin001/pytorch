@@ -2091,9 +2091,12 @@ class InstructionTranslator(InstructionTranslatorBase):
             tuple(null_idxes),
         )
 
-        print(f'\n\n{name}, new_code')
-        import dis; [print(x) for x in list(dis.get_instructions(new_code))]
+        import dis
+
+        print(f'\n\n{name}, create_call_resume_at - new_code:')
+        [print(x) for x in list(dis.get_instructions(new_code))]
         print(f'\n\n')
+
         # a new call_function
         if new_code.co_freevars:
             cg.make_function_with_closure(name, new_code, True, stack_len)
@@ -2106,10 +2109,11 @@ class InstructionTranslator(InstructionTranslatorBase):
         cg.extend_output([cg.create_load(k) for k in argnames])
         cg.extend_output(create_call_function(nargs, False))
         cg.append_output(create_instruction("RETURN_VALUE"))
-        # print(f'\n\n{name}')
-        print(f'call insts')
+
+        print(f'\n\ncreate_call_resume_at - resume - {name}:')
         [print(x) for x in cg.get_instructions()]
         print(f'\n\n')
+
         return cg.get_instructions()
 
     def RETURN_VALUE(self, inst):

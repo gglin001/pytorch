@@ -855,16 +855,25 @@ class OutputGraph(Checkpointable[OutputGraphState]):
         gm.compile_subgraph_reason = self.compile_subgraph_reason
         name = unique_id("__compiled_fn")
 
+        print(f"compile_and_call_fx_graph - log starts")
+
         graph_code_log.debug("%s", lazy_format_graph_code(name, gm))
         graph_tabular_log.debug("%s", lazy_format_graph_tabular(name, gm))
 
         assert_no_fake_params_or_buffers(gm)
         compiled_fn = self.call_user_compiler(gm)
+
+        import dis
+
+        print(f"\ncompile_and_call_fx_graph - compiled_fn before disable(): {name}:")
+        [print(x) for x in list(dis.get_instructions(compiled_fn))]
+        print(f"")
+
         compiled_fn = disable(compiled_fn)
 
-        print(f"\n{name}:")
-        import dis
-        [print(x) for x in list(dis.get_instructions(compiled_fn))]
+        print(f"\ncompile_and_call_fx_graph - compiled_fn after disable(): {name}:")
+        # [print(x) for x in list(dis.get_instructions(compiled_fn))]
+        [print(x) for x in list(dis.get_instructions(disable(compiled_fn)))]
         print(f"")
 
         counters["stats"]["unique_graphs"] += 1
