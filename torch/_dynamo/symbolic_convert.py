@@ -2224,6 +2224,7 @@ class InliningInstructionTranslator(InstructionTranslatorBase):
             suffix = f"\n{dis.Bytecode(code).dis()}"
         log.debug("INLINING %s%s", code, suffix)
 
+        print(f"inline_call_ - InliningInstructionTranslator() works here")
         # parent is used
         tracer: InliningInstructionTranslator
         if is_generator(code):
