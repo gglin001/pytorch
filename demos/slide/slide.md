@@ -58,8 +58,9 @@ more complex examples
 - target_1_add_func.py
 - target_2_print.py
 - target_3_if.py
+- target_4_module.py
 
-- ...(Python is a flexible)
+- ...(Python & torch is a flexible)
 
 ---
 
