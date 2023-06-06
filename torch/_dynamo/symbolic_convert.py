@@ -2093,9 +2093,9 @@ class InstructionTranslator(InstructionTranslatorBase):
 
         import dis
 
-        print(f'\n\n{name}, create_call_resume_at - new_code:')
+        print(f'\ncreate_call_resume_at - {name} - new_code:')
         [print(x) for x in list(dis.get_instructions(new_code))]
-        print(f'\n\n')
+        print(f'')
 
         # a new call_function
         if new_code.co_freevars:
@@ -2109,10 +2109,6 @@ class InstructionTranslator(InstructionTranslatorBase):
         cg.extend_output([cg.create_load(k) for k in argnames])
         cg.extend_output(create_call_function(nargs, False))
         cg.append_output(create_instruction("RETURN_VALUE"))
-
-        print(f'\n\ncreate_call_resume_at - resume - {name}:')
-        [print(x) for x in cg.get_instructions()]
-        print(f'\n\n')
 
         return cg.get_instructions()
 

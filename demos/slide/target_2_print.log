@@ -1,0 +1,410 @@
+(pyenv) root@allen-archlinux:.../pytorch# python demos/slide/target_2_print.py
+
+[2023-06-06 16:33:40,355] torch._dynamo.eval_frame: [DEBUG] skipping __init__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-06-06 16:33:40,355] torch._dynamo.eval_frame: [DEBUG] skipping __enter__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-06-06 16:33:40,355] torch._dynamo.eval_frame: [DEBUG] skipping __init__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-06-06 16:33:40,355] torch._dynamo.eval_frame: [DEBUG] skipping __enter__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-06-06 16:33:40,355] torch._dynamo.eval_frame: [DEBUG] skipping enable_dynamic /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-06-06 16:33:40,355] torch._utils_internal: [INFO] dynamo _convert_frame_assert._compile: {'co_name': 'add', 'co_filename': 'demos/slide/target_2_print.py', 'co_firstlineno': 26, 'cache_size': 0}
+[2023-06-06 16:33:40,355] torch._dynamo.symbolic_convert: [INFO] Step 1: torchdynamo start tracing add demos/slide/target_2_print.py:26
+[2023-06-06 16:33:40,355] torch._subclasses.fake_tensor: [DEBUG] create_mode 0x7f6cc9b19490
+[2023-06-06 16:33:40,356] torch._dynamo.variables.builder: [DEBUG] wrap_to_fake L['a'] (10,) None None
+[2023-06-06 16:33:40,357] torch._dynamo.variables.builder: [DEBUG] wrap_to_fake L['b'] (10,) None None
+[2023-06-06 16:33:40,357] torch._dynamo.symbolic_convert: [DEBUG] TRACE starts_line demos/slide/target_2_print.py:28
+[2023-06-06 16:33:40,357] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST a []
+[2023-06-06 16:33:40,357] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST b [TensorVariable()]
+[2023-06-06 16:33:40,357] torch._dynamo.symbolic_convert: [DEBUG] TRACE BINARY_MULTIPLY None [TensorVariable(), TensorVariable()]
+[2023-06-06 16:33:40,358] torch._subclasses.fake_tensor: [DEBUG] FakeTensorMode.__torch_dispatch__: aten.mul.Tensor
+[2023-06-06 16:33:40,359] torch._dynamo.symbolic_convert: [DEBUG] TRACE STORE_FAST c [TensorVariable()]
+[2023-06-06 16:33:40,359] torch._dynamo.symbolic_convert: [DEBUG] TRACE starts_line demos/slide/target_2_print.py:29
+[2023-06-06 16:33:40,359] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_GLOBAL print []
+[2023-06-06 16:33:40,359] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_CONST start_forward [BuiltinVariable(print)]
+[2023-06-06 16:33:40,359] torch._dynamo.symbolic_convert: [DEBUG] TRACE CALL_FUNCTION 1 [BuiltinVariable(print), ConstantVariable(str)]
+[2023-06-06 16:33:40,359] torch._dynamo.symbolic_convert: [DEBUG] break_graph_if_unsupported triggered compile
+Traceback (most recent call last):
+  File "/repos/gglin001/pytorch/torch/_dynamo/symbolic_convert.py", line 390, in wrapper
+    return inner_fn(self, inst)
+  File "/repos/gglin001/pytorch/torch/_dynamo/symbolic_convert.py", line 1101, in CALL_FUNCTION
+    self.call_function(fn, args, {})
+  File "/repos/gglin001/pytorch/torch/_dynamo/symbolic_convert.py", line 559, in call_function
+    fn_res = fn.call_function(self, args, kwargs)
+  File "/repos/gglin001/pytorch/torch/_dynamo/variables/builtin.py", line 613, in call_function
+    return super().call_function(tx, args, kwargs)
+  File "/repos/gglin001/pytorch/torch/_dynamo/variables/base.py", line 230, in call_function
+    unimplemented(f"call_function {self} {args} {kwargs}")
+  File "/repos/gglin001/pytorch/torch/_dynamo/exc.py", line 134, in unimplemented
+    raise Unsupported(msg)
+torch._dynamo.exc.Unsupported: call_function BuiltinVariable(print) [ConstantVariable(str)] {}
+[2023-06-06 16:33:40,360] torch._dynamo.output_graph: [DEBUG] restore_graphstate: removed 0 nodes
+[2023-06-06 16:33:40,360] torch._dynamo.output_graph: [DEBUG] COMPILING GRAPH due to GraphCompileReason(reason='call_function BuiltinVariable(print) [ConstantVariable(str)] {}', user_stack=[<FrameSummary file demos/slide/target_2_print.py, line 29 in add>], graph_break=True)
+compile_and_call_fx_graph - log starts
+[2023-06-06 16:33:40,361] torch._dynamo.output_graph.__graph_code: [DEBUG] TRACED GRAPH
+ ===== __compiled_fn_0 =====
+ <eval_with_key>.0 class GraphModule(torch.nn.Module):
+    def forward(self, L_a_ : torch.Tensor, L_b_ : torch.Tensor):
+        l_a_ = L_a_
+        l_b_ = L_b_
+
+        # File: demos/slide/target_2_print.py:28, code: c = a * b
+        mul = l_a_ * l_b_;  l_a_ = l_b_ = None
+        return (mul,)
+
+
+[2023-06-06 16:33:40,361] torch._dynamo.output_graph.__graph: [DEBUG] TRACED GRAPH
+ __compiled_fn_0 <eval_with_key>.0 opcode         name    target                   args          kwargs
+-------------  ------  -----------------------  ------------  --------
+placeholder    l_a_    L_a_                     ()            {}
+placeholder    l_b_    L_b_                     ()            {}
+call_function  mul     <built-in function mul>  (l_a_, l_b_)  {}
+output         output  output                   ((mul,),)     {}
+
+[2023-06-06 16:33:40,364] torch._dynamo.output_graph: [INFO] Step 2: calling compiler function my_compiler
+my_compiler() called with FX graph:
+[2023-06-06 16:33:40,364] torch._dynamo.output_graph: [INFO] Step 2: done compiler function my_compiler
+
+compile_and_call_fx_graph - compiled_fn before disable(): __compiled_fn_0:
+Instruction(opname='LOAD_FAST', opcode=124, arg=1, argval='L_a_', argrepr='L_a_', offset=0, starts_line=5, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=3, argval='l_a_', argrepr='l_a_', offset=2, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=2, argval='L_b_', argrepr='L_b_', offset=4, starts_line=6, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=4, argval='l_b_', argrepr='l_b_', offset=6, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=3, argval='l_a_', argrepr='l_a_', offset=8, starts_line=7, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='l_b_', argrepr='l_b_', offset=10, starts_line=None, is_jump_target=False)
+Instruction(opname='BINARY_MULTIPLY', opcode=20, arg=None, argval=None, argrepr='', offset=12, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=5, argval='mul', argrepr='mul', offset=14, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=16, starts_line=None, is_jump_target=False)
+Instruction(opname='DUP_TOP', opcode=4, arg=None, argval=None, argrepr='', offset=18, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=3, argval='l_a_', argrepr='l_a_', offset=20, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=4, argval='l_b_', argrepr='l_b_', offset=22, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=5, argval='mul', argrepr='mul', offset=24, starts_line=8, is_jump_target=False)
+Instruction(opname='BUILD_TUPLE', opcode=102, arg=1, argval=1, argrepr='', offset=26, starts_line=None, is_jump_target=False)
+Instruction(opname='RETURN_VALUE', opcode=83, arg=None, argval=None, argrepr='', offset=28, starts_line=None, is_jump_target=False)
+
+
+compile_and_call_fx_graph - compiled_fn after disable(): __compiled_fn_0:
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=0, argval='isinstance', argrepr='isinstance', offset=0, starts_line=268, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=4, argval='self', argrepr='self', offset=2, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=1, argval='DisableContext', argrepr='DisableContext', offset=4, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=2, argval=2, argrepr='', offset=6, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_JUMP_IF_TRUE', opcode=115, arg=48, argval=48, argrepr='', offset=8, starts_line=267, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=2, argval='torch', argrepr='torch', offset=10, starts_line=269, is_jump_target=False)
+Instruction(opname='LOAD_ATTR', opcode=106, arg=3, argval='fx', argrepr='fx', offset=12, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_ATTR', opcode=106, arg=4, argval='_symbolic_trace', argrepr='_symbolic_trace', offset=14, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_METHOD', opcode=160, arg=5, argval='is_fx_tracing', argrepr='is_fx_tracing', offset=16, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_METHOD', opcode=161, arg=0, argval=0, argrepr='', offset=18, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_JUMP_IF_FALSE', opcode=114, arg=48, argval=48, argrepr='', offset=20, starts_line=267, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=6, argval='config', argrepr='config', offset=22, starts_line=271, is_jump_target=False)
+Instruction(opname='LOAD_ATTR', opcode=106, arg=7, argval='error_on_nested_fx_trace', argrepr='error_on_nested_fx_trace', offset=24, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_JUMP_IF_FALSE', opcode=114, arg=38, argval=38, argrepr='', offset=26, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=8, argval='RuntimeError', argrepr='RuntimeError', offset=28, starts_line=272, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=1, argval='Detected that you are using FX to symbolically trace a dynamo-optimized function. This is not supported at the moment.', argrepr="'Detected that you are using FX to symbolically trace a dynamo-optimized function. This is not supported at the moment.'", offset=30, starts_line=273, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=1, argval=1, argrepr='', offset=32, starts_line=272, is_jump_target=False)
+Instruction(opname='RAISE_VARARGS', opcode=130, arg=1, argval=1, argrepr='', offset=34, starts_line=None, is_jump_target=False)
+Instruction(opname='JUMP_FORWARD', opcode=110, arg=10, argval=48, argrepr='to 48', offset=36, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=2, argval='fn', argrepr='fn', offset=38, starts_line=277, is_jump_target=True)
+Instruction(opname='LOAD_FAST', opcode=124, arg=0, argval='args', argrepr='args', offset=40, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=1, argval='kwargs', argrepr='kwargs', offset=42, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION_EX', opcode=142, arg=1, argval=1, argrepr='', offset=44, starts_line=None, is_jump_target=False)
+Instruction(opname='RETURN_VALUE', opcode=83, arg=None, argval=None, argrepr='', offset=46, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=3, argval='on_enter', argrepr='on_enter', offset=48, starts_line=279, is_jump_target=True)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=0, argval=0, argrepr='', offset=50, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=52, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=9, argval='set_eval_frame', argrepr='set_eval_frame', offset=54, starts_line=280, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=1, argval='callback', argrepr='callback', offset=56, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=1, argval=1, argrepr='', offset=58, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=2, argval='prior', argrepr='prior', offset=60, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=0, argval='backend_ctx_ctor', argrepr='backend_ctx_ctor', offset=62, starts_line=281, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=0, argval=0, argrepr='', offset=64, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=3, argval='backend_ctx', argrepr='backend_ctx', offset=66, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=3, argval='backend_ctx', argrepr='backend_ctx', offset=68, starts_line=282, is_jump_target=False)
+Instruction(opname='LOAD_METHOD', opcode=160, arg=10, argval='__enter__', argrepr='__enter__', offset=70, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_METHOD', opcode=161, arg=0, argval=0, argrepr='', offset=72, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=74, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=11, argval='enable_dynamic', argrepr='enable_dynamic', offset=76, starts_line=283, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=4, argval='self', argrepr='self', offset=78, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_ATTR', opcode=106, arg=12, argval='dynamic', argrepr='dynamic', offset=80, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=4, argval='self', argrepr='self', offset=82, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_ATTR', opcode=106, arg=13, argval='export', argrepr='export', offset=84, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=2, argval=2, argrepr='', offset=86, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=4, argval='dynamic_ctx', argrepr='dynamic_ctx', offset=88, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='dynamic_ctx', argrepr='dynamic_ctx', offset=90, starts_line=284, is_jump_target=False)
+Instruction(opname='LOAD_METHOD', opcode=160, arg=10, argval='__enter__', argrepr='__enter__', offset=92, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_METHOD', opcode=161, arg=0, argval=0, argrepr='', offset=94, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=96, starts_line=None, is_jump_target=False)
+Instruction(opname='SETUP_FINALLY', opcode=122, arg=14, argval=114, argrepr='to 114', offset=98, starts_line=285, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=2, argval='fn', argrepr='fn', offset=100, starts_line=288, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=0, argval='args', argrepr='args', offset=102, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=1, argval='kwargs', argrepr='kwargs', offset=104, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION_EX', opcode=142, arg=1, argval=1, argrepr='', offset=106, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_BLOCK', opcode=87, arg=None, argval=None, argrepr='', offset=108, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FINALLY', opcode=162, arg=2, argval=114, argrepr='to 114', offset=110, starts_line=None, is_jump_target=False)
+Instruction(opname='RETURN_VALUE', opcode=83, arg=None, argval=None, argrepr='', offset=112, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=9, argval='set_eval_frame', argrepr='set_eval_frame', offset=114, starts_line=290, is_jump_target=True)
+Instruction(opname='LOAD_FAST', opcode=124, arg=2, argval='prior', argrepr='prior', offset=116, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=1, argval=1, argrepr='', offset=118, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=120, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='dynamic_ctx', argrepr='dynamic_ctx', offset=122, starts_line=291, is_jump_target=False)
+Instruction(opname='LOAD_METHOD', opcode=160, arg=14, argval='__exit__', argrepr='__exit__', offset=124, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=126, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=128, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=130, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_METHOD', opcode=161, arg=3, argval=3, argrepr='', offset=132, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=134, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=3, argval='backend_ctx', argrepr='backend_ctx', offset=136, starts_line=292, is_jump_target=False)
+Instruction(opname='LOAD_METHOD', opcode=160, arg=14, argval='__exit__', argrepr='__exit__', offset=138, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=140, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=142, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=144, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_METHOD', opcode=161, arg=3, argval=3, argrepr='', offset=146, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=148, starts_line=None, is_jump_target=False)
+Instruction(opname='END_FINALLY', opcode=88, arg=None, argval=None, argrepr='', offset=150, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=152, starts_line=None, is_jump_target=False)
+Instruction(opname='RETURN_VALUE', opcode=83, arg=None, argval=None, argrepr='', offset=154, starts_line=None, is_jump_target=False)
+
+
+create_call_resume_at - __resume_at_14_1 - new_code:
+Instruction(opname='LOAD_FAST', opcode=124, arg=0, argval='___stack0', argrepr='___stack0', offset=0, starts_line=29, is_jump_target=False)
+Instruction(opname='JUMP_ABSOLUTE', opcode=113, arg=18, argval=18, argrepr='', offset=2, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=2, argval='a', argrepr='a', offset=4, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=3, argval='b', argrepr='b', offset=6, starts_line=None, is_jump_target=False)
+Instruction(opname='BINARY_MULTIPLY', opcode=20, arg=None, argval=None, argrepr='', offset=8, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=1, argval='c', argrepr='c', offset=10, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=0, argval='print', argrepr='print', offset=12, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=1, argval='start_forward', argrepr="'start_forward'", offset=14, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=1, argval=1, argrepr='', offset=16, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=18, starts_line=None, is_jump_target=True)
+Instruction(opname='LOAD_FAST', opcode=124, arg=1, argval='c', argrepr='c', offset=20, starts_line=30, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=1, argval='c', argrepr='c', offset=22, starts_line=None, is_jump_target=False)
+Instruction(opname='BINARY_ADD', opcode=23, arg=None, argval=None, argrepr='', offset=24, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=4, argval='d', argrepr='d', offset=26, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='d', argrepr='d', offset=28, starts_line=31, is_jump_target=False)
+Instruction(opname='RETURN_VALUE', opcode=83, arg=None, argval=None, argrepr='', offset=30, starts_line=None, is_jump_target=False)
+
+ORIGINAL BYTECODE add demos/slide/target_2_print.py line 26
+ 28           0 LOAD_FAST                0 (a)
+              2 LOAD_FAST                1 (b)
+              4 BINARY_MULTIPLY
+              6 STORE_FAST               2 (c)
+
+ 29           8 LOAD_GLOBAL              0 (print)
+             10 LOAD_CONST               1 ('start_forward')
+             12 CALL_FUNCTION            1
+             14 POP_TOP
+
+ 30          16 LOAD_FAST                2 (c)
+             18 LOAD_FAST                2 (c)
+             20 BINARY_ADD
+             22 STORE_FAST               3 (d)
+
+ 31          24 LOAD_FAST                3 (d)
+             26 RETURN_VALUE
+
+
+MODIFIED BYTECODE add demos/slide/target_2_print.py line 26
+ 26           0 LOAD_GLOBAL              1 (__compiled_fn_0)
+              2 LOAD_FAST                0 (a)
+              4 LOAD_FAST                1 (b)
+              6 CALL_FUNCTION            2
+              8 STORE_FAST               4 (___graph_out_0)
+             10 LOAD_GLOBAL              0 (print)
+             12 LOAD_CONST               1 ('start_forward')
+             14 LOAD_FAST                4 (___graph_out_0)
+             16 LOAD_CONST               2 (0)
+             18 BINARY_SUBSCR
+             20 STORE_FAST               2 (c)
+
+ 29          22 CALL_FUNCTION            1
+             24 LOAD_GLOBAL              2 (__resume_at_14_1)
+             26 ROT_TWO
+             28 LOAD_FAST                2 (c)
+             30 CALL_FUNCTION            2
+             32 RETURN_VALUE
+
+
+[2023-06-06 16:33:40,388] torch._dynamo.convert_frame.__guards: [DEBUG] GUARDS:
+  ___is_grad_enabled()
+  not ___are_deterministic_algorithms_enabled()
+  utils_device.CURRENT_DEVICE == None
+[2023-06-06 16:33:40,388] torch._dynamo.eval_frame: [DEBUG] skipping _fn /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-06-06 16:33:40,388] torch._dynamo.eval_frame: [DEBUG] skipping nothing /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-06-06 16:33:40,388] torch._dynamo.eval_frame: [DEBUG] skipping __exit__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-06-06 16:33:40,388] torch._dynamo.eval_frame: [DEBUG] skipping __exit__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+start_forward
+[2023-06-06 16:33:40,388] torch._utils_internal: [INFO] dynamo _convert_frame_assert._compile: {'co_name': '<resume in add>', 'co_filename': 'demos/slide/target_2_print.py', 'co_firstlineno': 29, 'cache_size': 0}
+[2023-06-06 16:33:40,388] torch._dynamo.symbolic_convert: [INFO] Step 1: torchdynamo start tracing <resume in add> demos/slide/target_2_print.py:29
+[2023-06-06 16:33:40,388] torch._subclasses.fake_tensor: [DEBUG] create_mode 0x7f6cc998ddf0
+[2023-06-06 16:33:40,389] torch._dynamo.variables.builder: [DEBUG] wrap_to_fake L['c'] (10,) None None
+[2023-06-06 16:33:40,389] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST ___stack0 []
+[2023-06-06 16:33:40,389] torch._dynamo.symbolic_convert: [DEBUG] TRACE JUMP_ABSOLUTE 18 [ConstantVariable(NoneType)]
+[2023-06-06 16:33:40,389] torch._dynamo.symbolic_convert: [DEBUG] TRACE POP_TOP None [ConstantVariable(NoneType)]
+[2023-06-06 16:33:40,389] torch._dynamo.symbolic_convert: [DEBUG] TRACE starts_line demos/slide/target_2_print.py:30
+[2023-06-06 16:33:40,389] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST c []
+[2023-06-06 16:33:40,389] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST c [TensorVariable()]
+[2023-06-06 16:33:40,389] torch._dynamo.symbolic_convert: [DEBUG] TRACE BINARY_ADD None [TensorVariable(), TensorVariable()]
+[2023-06-06 16:33:40,390] torch._subclasses.fake_tensor: [DEBUG] FakeTensorMode.__torch_dispatch__: aten.add.Tensor
+[2023-06-06 16:33:40,391] torch._dynamo.symbolic_convert: [DEBUG] TRACE STORE_FAST d [TensorVariable()]
+[2023-06-06 16:33:40,391] torch._dynamo.symbolic_convert: [DEBUG] TRACE starts_line demos/slide/target_2_print.py:31
+[2023-06-06 16:33:40,391] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST d []
+[2023-06-06 16:33:40,391] torch._dynamo.symbolic_convert: [DEBUG] TRACE RETURN_VALUE None [TensorVariable()]
+[2023-06-06 16:33:40,391] torch._dynamo.symbolic_convert: [INFO] Step 1: torchdynamo done tracing <resume in add> (RETURN_VALUE)
+[2023-06-06 16:33:40,391] torch._dynamo.symbolic_convert: [DEBUG] RETURN_VALUE triggered compile
+[2023-06-06 16:33:40,391] torch._dynamo.output_graph: [DEBUG] COMPILING GRAPH due to GraphCompileReason(reason='return_value', user_stack=[<FrameSummary file demos/slide/target_2_print.py, line 31 in <resume in add>>], graph_break=False)
+compile_and_call_fx_graph - log starts
+[2023-06-06 16:33:40,391] torch._dynamo.output_graph.__graph_code: [DEBUG] TRACED GRAPH
+ ===== __compiled_fn_2 =====
+ <eval_with_key>.1 class GraphModule(torch.nn.Module):
+    def forward(self, L_c_ : torch.Tensor):
+        l_c_ = L_c_
+
+        # File: demos/slide/target_2_print.py:30, code: d = c + c
+        add = l_c_ + l_c_;  l_c_ = None
+        return (add,)
+
+
+[2023-06-06 16:33:40,391] torch._dynamo.output_graph.__graph: [DEBUG] TRACED GRAPH
+ __compiled_fn_2 <eval_with_key>.1 opcode         name    target                   args          kwargs
+-------------  ------  -----------------------  ------------  --------
+placeholder    l_c_    L_c_                     ()            {}
+call_function  add     <built-in function add>  (l_c_, l_c_)  {}
+output         output  output                   ((add,),)     {}
+
+[2023-06-06 16:33:40,392] torch._dynamo.output_graph: [INFO] Step 2: calling compiler function my_compiler
+my_compiler() called with FX graph:
+[2023-06-06 16:33:40,392] torch._dynamo.output_graph: [INFO] Step 2: done compiler function my_compiler
+
+compile_and_call_fx_graph - compiled_fn before disable(): __compiled_fn_2:
+Instruction(opname='LOAD_FAST', opcode=124, arg=1, argval='L_c_', argrepr='L_c_', offset=0, starts_line=5, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=2, argval='l_c_', argrepr='l_c_', offset=2, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=2, argval='l_c_', argrepr='l_c_', offset=4, starts_line=6, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=2, argval='l_c_', argrepr='l_c_', offset=6, starts_line=None, is_jump_target=False)
+Instruction(opname='BINARY_ADD', opcode=23, arg=None, argval=None, argrepr='', offset=8, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=3, argval='add', argrepr='add', offset=10, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=12, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=2, argval='l_c_', argrepr='l_c_', offset=14, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=3, argval='add', argrepr='add', offset=16, starts_line=7, is_jump_target=False)
+Instruction(opname='BUILD_TUPLE', opcode=102, arg=1, argval=1, argrepr='', offset=18, starts_line=None, is_jump_target=False)
+Instruction(opname='RETURN_VALUE', opcode=83, arg=None, argval=None, argrepr='', offset=20, starts_line=None, is_jump_target=False)
+
+
+compile_and_call_fx_graph - compiled_fn after disable(): __compiled_fn_2:
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=0, argval='isinstance', argrepr='isinstance', offset=0, starts_line=268, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=4, argval='self', argrepr='self', offset=2, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=1, argval='DisableContext', argrepr='DisableContext', offset=4, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=2, argval=2, argrepr='', offset=6, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_JUMP_IF_TRUE', opcode=115, arg=48, argval=48, argrepr='', offset=8, starts_line=267, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=2, argval='torch', argrepr='torch', offset=10, starts_line=269, is_jump_target=False)
+Instruction(opname='LOAD_ATTR', opcode=106, arg=3, argval='fx', argrepr='fx', offset=12, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_ATTR', opcode=106, arg=4, argval='_symbolic_trace', argrepr='_symbolic_trace', offset=14, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_METHOD', opcode=160, arg=5, argval='is_fx_tracing', argrepr='is_fx_tracing', offset=16, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_METHOD', opcode=161, arg=0, argval=0, argrepr='', offset=18, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_JUMP_IF_FALSE', opcode=114, arg=48, argval=48, argrepr='', offset=20, starts_line=267, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=6, argval='config', argrepr='config', offset=22, starts_line=271, is_jump_target=False)
+Instruction(opname='LOAD_ATTR', opcode=106, arg=7, argval='error_on_nested_fx_trace', argrepr='error_on_nested_fx_trace', offset=24, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_JUMP_IF_FALSE', opcode=114, arg=38, argval=38, argrepr='', offset=26, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=8, argval='RuntimeError', argrepr='RuntimeError', offset=28, starts_line=272, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=1, argval='Detected that you are using FX to symbolically trace a dynamo-optimized function. This is not supported at the moment.', argrepr="'Detected that you are using FX to symbolically trace a dynamo-optimized function. This is not supported at the moment.'", offset=30, starts_line=273, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=1, argval=1, argrepr='', offset=32, starts_line=272, is_jump_target=False)
+Instruction(opname='RAISE_VARARGS', opcode=130, arg=1, argval=1, argrepr='', offset=34, starts_line=None, is_jump_target=False)
+Instruction(opname='JUMP_FORWARD', opcode=110, arg=10, argval=48, argrepr='to 48', offset=36, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=2, argval='fn', argrepr='fn', offset=38, starts_line=277, is_jump_target=True)
+Instruction(opname='LOAD_FAST', opcode=124, arg=0, argval='args', argrepr='args', offset=40, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=1, argval='kwargs', argrepr='kwargs', offset=42, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION_EX', opcode=142, arg=1, argval=1, argrepr='', offset=44, starts_line=None, is_jump_target=False)
+Instruction(opname='RETURN_VALUE', opcode=83, arg=None, argval=None, argrepr='', offset=46, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=3, argval='on_enter', argrepr='on_enter', offset=48, starts_line=279, is_jump_target=True)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=0, argval=0, argrepr='', offset=50, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=52, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=9, argval='set_eval_frame', argrepr='set_eval_frame', offset=54, starts_line=280, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=1, argval='callback', argrepr='callback', offset=56, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=1, argval=1, argrepr='', offset=58, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=2, argval='prior', argrepr='prior', offset=60, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=0, argval='backend_ctx_ctor', argrepr='backend_ctx_ctor', offset=62, starts_line=281, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=0, argval=0, argrepr='', offset=64, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=3, argval='backend_ctx', argrepr='backend_ctx', offset=66, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=3, argval='backend_ctx', argrepr='backend_ctx', offset=68, starts_line=282, is_jump_target=False)
+Instruction(opname='LOAD_METHOD', opcode=160, arg=10, argval='__enter__', argrepr='__enter__', offset=70, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_METHOD', opcode=161, arg=0, argval=0, argrepr='', offset=72, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=74, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=11, argval='enable_dynamic', argrepr='enable_dynamic', offset=76, starts_line=283, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=4, argval='self', argrepr='self', offset=78, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_ATTR', opcode=106, arg=12, argval='dynamic', argrepr='dynamic', offset=80, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=4, argval='self', argrepr='self', offset=82, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_ATTR', opcode=106, arg=13, argval='export', argrepr='export', offset=84, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=2, argval=2, argrepr='', offset=86, starts_line=None, is_jump_target=False)
+Instruction(opname='STORE_FAST', opcode=125, arg=4, argval='dynamic_ctx', argrepr='dynamic_ctx', offset=88, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='dynamic_ctx', argrepr='dynamic_ctx', offset=90, starts_line=284, is_jump_target=False)
+Instruction(opname='LOAD_METHOD', opcode=160, arg=10, argval='__enter__', argrepr='__enter__', offset=92, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_METHOD', opcode=161, arg=0, argval=0, argrepr='', offset=94, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=96, starts_line=None, is_jump_target=False)
+Instruction(opname='SETUP_FINALLY', opcode=122, arg=14, argval=114, argrepr='to 114', offset=98, starts_line=285, is_jump_target=False)
+Instruction(opname='LOAD_DEREF', opcode=136, arg=2, argval='fn', argrepr='fn', offset=100, starts_line=288, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=0, argval='args', argrepr='args', offset=102, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=1, argval='kwargs', argrepr='kwargs', offset=104, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION_EX', opcode=142, arg=1, argval=1, argrepr='', offset=106, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_BLOCK', opcode=87, arg=None, argval=None, argrepr='', offset=108, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FINALLY', opcode=162, arg=2, argval=114, argrepr='to 114', offset=110, starts_line=None, is_jump_target=False)
+Instruction(opname='RETURN_VALUE', opcode=83, arg=None, argval=None, argrepr='', offset=112, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_GLOBAL', opcode=116, arg=9, argval='set_eval_frame', argrepr='set_eval_frame', offset=114, starts_line=290, is_jump_target=True)
+Instruction(opname='LOAD_FAST', opcode=124, arg=2, argval='prior', argrepr='prior', offset=116, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_FUNCTION', opcode=131, arg=1, argval=1, argrepr='', offset=118, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=120, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='dynamic_ctx', argrepr='dynamic_ctx', offset=122, starts_line=291, is_jump_target=False)
+Instruction(opname='LOAD_METHOD', opcode=160, arg=14, argval='__exit__', argrepr='__exit__', offset=124, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=126, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=128, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=130, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_METHOD', opcode=161, arg=3, argval=3, argrepr='', offset=132, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=134, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_FAST', opcode=124, arg=3, argval='backend_ctx', argrepr='backend_ctx', offset=136, starts_line=292, is_jump_target=False)
+Instruction(opname='LOAD_METHOD', opcode=160, arg=14, argval='__exit__', argrepr='__exit__', offset=138, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=140, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=142, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=144, starts_line=None, is_jump_target=False)
+Instruction(opname='CALL_METHOD', opcode=161, arg=3, argval=3, argrepr='', offset=146, starts_line=None, is_jump_target=False)
+Instruction(opname='POP_TOP', opcode=1, arg=None, argval=None, argrepr='', offset=148, starts_line=None, is_jump_target=False)
+Instruction(opname='END_FINALLY', opcode=88, arg=None, argval=None, argrepr='', offset=150, starts_line=None, is_jump_target=False)
+Instruction(opname='LOAD_CONST', opcode=100, arg=0, argval=None, argrepr='None', offset=152, starts_line=None, is_jump_target=False)
+Instruction(opname='RETURN_VALUE', opcode=83, arg=None, argval=None, argrepr='', offset=154, starts_line=None, is_jump_target=False)
+
+ORIGINAL BYTECODE <resume in add> demos/slide/target_2_print.py line 29
+ 29           0 LOAD_FAST                0 (___stack0)
+              2 JUMP_ABSOLUTE           18
+              4 LOAD_FAST                2 (a)
+              6 LOAD_FAST                3 (b)
+              8 BINARY_MULTIPLY
+             10 STORE_FAST               1 (c)
+             12 LOAD_GLOBAL              0 (print)
+             14 LOAD_CONST               1 ('start_forward')
+             16 CALL_FUNCTION            1
+        >>   18 POP_TOP
+
+ 30          20 LOAD_FAST                1 (c)
+             22 LOAD_FAST                1 (c)
+             24 BINARY_ADD
+             26 STORE_FAST               4 (d)
+
+ 31          28 LOAD_FAST                4 (d)
+             30 RETURN_VALUE
+
+
+MODIFIED BYTECODE <resume in add> demos/slide/target_2_print.py line 29
+ 29           0 LOAD_GLOBAL              1 (__compiled_fn_2)
+              2 LOAD_FAST                1 (c)
+              4 CALL_FUNCTION            1
+              6 UNPACK_SEQUENCE          1
+              8 RETURN_VALUE
+
+
+[2023-06-06 16:33:40,393] torch._dynamo.convert_frame.__guards: [DEBUG] GUARDS:
+  ___is_grad_enabled()
+  not ___are_deterministic_algorithms_enabled()
+  utils_device.CURRENT_DEVICE == None
+[2023-06-06 16:33:40,394] torch._dynamo.eval_frame: [DEBUG] skipping __call__ /opt/conda/envs/pyenv/lib/python3.8/weakref.py
+[2023-06-06 16:33:40,394] torch._dynamo.eval_frame: [DEBUG] skipping del_ten /repos/gglin001/pytorch/torch/_subclasses/meta_utils.py
+[2023-06-06 16:33:40,394] torch._dynamo.eval_frame: [DEBUG] skipping pop /opt/conda/envs/pyenv/lib/python3.8/weakref.py
+[2023-06-06 16:33:40,394] torch._dynamo.eval_frame: [DEBUG] skipping __hash__ /repos/gglin001/pytorch/torch/utils/weak.py
+[2023-06-06 16:33:40,394] torch._dynamo.eval_frame: [DEBUG] skipping expired /repos/gglin001/pytorch/torch/multiprocessing/reductions.py
+[2023-06-06 16:33:40,394] torch._dynamo.eval_frame: [DEBUG] skipping _expired /repos/gglin001/pytorch/torch/storage.py
+res: tensor([-0.3187, -0.8385, -1.0653,  1.4671,  3.3669, -0.0062,  2.3564, -5.6376,
+         0.6269,  4.5830])
+(pyenv) root@allen-archlinux:.../pytorch#
+(pyenv) root@allen-archlinux:.../pytorch#
