@@ -16,7 +16,7 @@ Jun 8 2023
 - Bytecode transform in torchdynamo
 - Guard
 - Backend
-- torchdynmo code structure
+- torchdynamo code structure
 - Paddle + (torch)dynamo = a better Paddle
 
 ---
@@ -60,7 +60,7 @@ more complex examples
 - target_3_if.py
 - target_4_module.py
 
-- ...(Python & torch is a flexible)
+- ...(Python & torch is very flexible)
 
 ---
 
@@ -84,7 +84,7 @@ Speed up bytecode interpretation through caching
 
 ---
 
-# torchdynmo code structure
+# torchdynamo code structure
 
 - (doc) docs/source/compile
 
@@ -93,12 +93,12 @@ Speed up bytecode interpretation through caching
 
 ---
 
-# Paddle + (torch)dynamo = a better Paddle
+# Paddle + (torch)dynamo = a better Paddle(in my view)
 
 - modernization(AI framework with compiler acceleration)
-- performance(vs eager mode)
-- opportunity(more friendly API for custom backends)
-- ...
+- performance(vs eager mode, see torch 2.0 reports)
+- opportunity(more friendly for custom backends integration)
+- ... (https://pytorch.org/get-started/pytorch-2.0/ as reference)
 
 ## (re)invent a wheel for paddle at
 
