@@ -48,5 +48,6 @@ print(f"res: {z}")
 
 
 """
-注意 log 中 INLINE 信息
+注意 log 中
+INLINE
 """

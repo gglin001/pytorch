@@ -31,10 +31,6 @@ all starts from:
 
 ---
 
-# let's start
-
----
-
 # PEP 523
 
 > This PEP proposes to expand CPython’s C API to allow for the specification of a per-interpreter function pointer to handle the evaluation of frames

@@ -42,5 +42,9 @@ z = add(x, y)
 print(f"res: {z}")
 
 """
-注意 log 中的 __resume_at_
+注意 log 中的
+
+Unsupported
+__resume_at_
+JUMP_ABSOLUTE
 """
