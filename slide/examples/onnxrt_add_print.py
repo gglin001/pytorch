@@ -13,6 +13,8 @@ torch._logging.set_logs(all=logging.DEBUG)
 
 def func(a, b):
     c = a + b
+    print(f"run_func")
+    c = c + c
     return c
 
 

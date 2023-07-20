@@ -7,3 +7,4 @@ python slide/examples/target_3_if.py >slide/examples/target_3_if.log 2>&1
 python slide/examples/target_4_module.py >slide/examples/target_4_module.log 2>&1
 
 python slide/examples/onnxrt_add.py >slide/examples/onnxrt_add.log 2>&1
+python slide/examples/onnxrt_add_print.py >slide/examples/onnxrt_add_print.log 2>&1

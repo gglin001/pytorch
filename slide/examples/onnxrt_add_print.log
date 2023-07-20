@@ -1,0 +1,236 @@
+[2023-07-20 08:01:22,405] torch._dynamo.eval_frame: [DEBUG] skipping __init__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 08:01:22,405] torch._dynamo.eval_frame: [DEBUG] skipping __enter__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 08:01:22,405] torch._dynamo.eval_frame: [DEBUG] skipping helper /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 08:01:22,405] torch._dynamo.eval_frame: [DEBUG] skipping __init__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 08:01:22,405] torch._dynamo.eval_frame: [DEBUG] skipping __enter__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 08:01:22,405] torch._dynamo.eval_frame: [DEBUG] skipping enable_dynamic /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-07-20 08:01:22,405] torch._utils_internal: [INFO] dynamo _convert_frame_assert._compile: {'co_name': 'func', 'co_filename': 'slide/examples/onnxrt_add_print.py', 'co_firstlineno': 14, 'cache_size': 0}
+[2023-07-20 08:01:22,405] torch._dynamo.symbolic_convert: [INFO] Step 1: torchdynamo start tracing func slide/examples/onnxrt_add_print.py:14
+[2023-07-20 08:01:22,405] torch.fx.experimental.symbolic_shapes: [INFO] 0.0: create_env
+[2023-07-20 08:01:22,406] torch._subclasses.fake_tensor: [DEBUG] create_mode 0x7f0515330910
+TRACE starts_line func slide/examples/onnxrt_add_print.py:14
+    def func(a, b):
+[2023-07-20 08:01:22,426] torch._dynamo.variables.builder: [DEBUG] wrap_to_fake L['a'] (2,) [<DimDynamic.STATIC: 2>] [None]
+[2023-07-20 08:01:22,428] torch._dynamo.variables.builder: [DEBUG] wrap_to_fake L['b'] (2,) [<DimDynamic.STATIC: 2>] [None]
+TRACE starts_line func slide/examples/onnxrt_add_print.py:15
+        c = a + b
+[2023-07-20 08:01:22,428] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST a []
+[2023-07-20 08:01:22,428] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST b [TensorVariable()]
+[2023-07-20 08:01:22,428] torch._dynamo.symbolic_convert: [DEBUG] TRACE BINARY_ADD None [TensorVariable(), TensorVariable()]
+[2023-07-20 08:01:22,429] torch._subclasses.fake_tensor: [DEBUG] FakeTensorMode.__torch_dispatch__: aten.add.Tensor
+[2023-07-20 08:01:22,430] torch._dynamo.symbolic_convert: [DEBUG] TRACE STORE_FAST c [TensorVariable()]
+TRACE starts_line func slide/examples/onnxrt_add_print.py:16
+        print(f"run_func")
+[2023-07-20 08:01:22,430] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_GLOBAL print []
+[2023-07-20 08:01:22,430] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_CONST run_func [BuiltinVariable(print)]
+[2023-07-20 08:01:22,430] torch._dynamo.symbolic_convert: [DEBUG] TRACE CALL_FUNCTION 1 [BuiltinVariable(print), ConstantVariable(str)]
+[2023-07-20 08:01:22,430] torch._dynamo.symbolic_convert: [DEBUG] break_graph_if_unsupported triggered compile
+Graph break: call_function BuiltinVariable(print) [ConstantVariable(str)] {} from user code at   File "slide/examples/onnxrt_add_print.py", line 16, in func
+    print(f"run_func")
+
+[2023-07-20 08:01:22,431] torch._dynamo.output_graph: [DEBUG] restore_graphstate: removed 0 nodes
+[2023-07-20 08:01:22,431] torch._dynamo.output_graph: [DEBUG] COMPILING GRAPH due to GraphCompileReason(reason='call_function BuiltinVariable(print) [ConstantVariable(str)] {}', user_stack=[<FrameSummary file slide/examples/onnxrt_add_print.py, line 16 in func>], graph_break=True)
+TRACED GRAPH
+ ===== __compiled_fn_0 =====
+ <eval_with_key>.0 class GraphModule(torch.nn.Module):
+    def forward(self, L_a_ : torch.Tensor, L_b_ : torch.Tensor):
+        l_a_ = L_a_
+        l_b_ = L_b_
+        
+        # File: slide/examples/onnxrt_add_print.py:15, code: c = a + b
+        add = l_a_ + l_b_;  l_a_ = l_b_ = None
+        return (add,)
+        
+
+TRACED GRAPH
+ __compiled_fn_0 <eval_with_key>.0 opcode         name    target                   args          kwargs
+-------------  ------  -----------------------  ------------  --------
+placeholder    l_a_    L_a_                     ()            {}
+placeholder    l_b_    L_b_                     ()            {}
+call_function  add     <built-in function add>  (l_a_, l_b_)  {}
+output         output  output                   ((add,),)     {}
+
+TRACED GRAPH TENSOR SIZES
+===== __compiled_fn_0 =====
+l_a_: (2,)
+l_b_: (2,)
+add: (2,)
+
+[2023-07-20 08:01:22,435] torch._dynamo.output_graph: [INFO] Step 2: calling compiler function onnxrt
+/repos/gglin001/pytorch/torch/jit/_check.py:172: UserWarning: The TorchScript type system doesn't support instance-level annotations on empty non-base types in `__init__`. Instead, either 1) use a type annotation in the class body, or 2) wrap the type in `torch.jit.Attribute`.
+  warnings.warn("The TorchScript type system doesn't support "
+[2023-07-20 08:01:22,485] torch._dynamo.output_graph: [INFO] Step 2: done compiler function onnxrt
+ORIGINAL BYTECODE func slide/examples/onnxrt_add_print.py line 14 
+ 15           0 LOAD_FAST                0 (a)
+              2 LOAD_FAST                1 (b)
+              4 BINARY_ADD
+              6 STORE_FAST               2 (c)
+
+ 16           8 LOAD_GLOBAL              0 (print)
+             10 LOAD_CONST               1 ('run_func')
+             12 CALL_FUNCTION            1
+             14 POP_TOP
+
+ 17          16 LOAD_FAST                2 (c)
+             18 LOAD_FAST                2 (c)
+             20 BINARY_ADD
+             22 STORE_FAST               2 (c)
+
+ 18          24 LOAD_FAST                2 (c)
+             26 RETURN_VALUE
+
+
+MODIFIED BYTECODE func slide/examples/onnxrt_add_print.py line 14 
+ 14           0 LOAD_GLOBAL              1 (__compiled_fn_0)
+              2 LOAD_FAST                0 (a)
+              4 LOAD_FAST                1 (b)
+              6 CALL_FUNCTION            2
+              8 STORE_FAST               3 (___graph_out_0)
+             10 LOAD_GLOBAL              0 (print)
+             12 LOAD_CONST               1 ('run_func')
+             14 LOAD_FAST                3 (___graph_out_0)
+             16 LOAD_CONST               2 (0)
+             18 BINARY_SUBSCR
+             20 STORE_FAST               2 (c)
+
+ 16          22 CALL_FUNCTION            1
+             24 LOAD_GLOBAL              2 (__resume_at_14_1)
+             26 ROT_TWO
+             28 LOAD_FAST                2 (c)
+             30 CALL_FUNCTION            2
+             32 RETURN_VALUE
+
+
+[2023-07-20 08:01:22,515] torch.fx.experimental.symbolic_shapes: [INFO] 0.0: produce_guards
+[2023-07-20 08:01:22,516] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['a'].size()[0] == 2
+[2023-07-20 08:01:22,516] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['a'].stride()[0] == 1
+[2023-07-20 08:01:22,516] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['a'].storage_offset() == 0
+[2023-07-20 08:01:22,516] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['b'].size()[0] == 2
+[2023-07-20 08:01:22,516] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['b'].stride()[0] == 1
+[2023-07-20 08:01:22,516] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['b'].storage_offset() == 0
+[2023-07-20 08:01:22,516] torch._utils_internal: [INFO] dynamic produce_guards: {'co_name': 'func', 'co_filename': 'slide/examples/onnxrt_add_print.py', 'co_firstlineno': 14, 'num_guards': 0, 'free_symbols': 0}
+GUARDS:
+  hasattr(L['a'], '_dynamo_dynamic_indices') == False
+  hasattr(L['b'], '_dynamo_dynamic_indices') == False
+  not ___is_grad_enabled()
+  not ___are_deterministic_algorithms_enabled()
+  ___is_torch_function_enabled()
+  utils_device.CURRENT_DEVICE == None
+[2023-07-20 08:01:22,519] torch._dynamo.eval_frame: [DEBUG] skipping _fn /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-07-20 08:01:22,519] torch._dynamo.eval_frame: [DEBUG] skipping nothing /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-07-20 08:01:22,520] torch._dynamo.eval_frame: [DEBUG] skipping __exit__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 08:01:22,520] torch._dynamo.eval_frame: [DEBUG] skipping __exit__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 08:01:22,520] torch._utils_internal: [INFO] dynamo _convert_frame_assert._compile: {'co_name': '<resume in func>', 'co_filename': 'slide/examples/onnxrt_add_print.py', 'co_firstlineno': 16, 'cache_size': 0}
+[2023-07-20 08:01:22,520] torch._dynamo.symbolic_convert: [INFO] Step 1: torchdynamo start tracing <resume in func> slide/examples/onnxrt_add_print.py:16
+[2023-07-20 08:01:22,520] torch.fx.experimental.symbolic_shapes: [INFO] 1.0: create_env
+[2023-07-20 08:01:22,520] torch._subclasses.fake_tensor: [DEBUG] create_mode 0x7f0510b815e0
+TRACE starts_line <resume in func> slide/examples/onnxrt_add_print.py:16
+        print(f"run_func")
+[2023-07-20 08:01:22,520] torch._dynamo.variables.builder: [DEBUG] wrap_to_fake L['c'] (2,) [<DimDynamic.STATIC: 2>] [None]
+[2023-07-20 08:01:22,521] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST ___stack0 []
+[2023-07-20 08:01:22,521] torch._dynamo.symbolic_convert: [DEBUG] TRACE JUMP_ABSOLUTE 18 [ConstantVariable(NoneType)]
+[2023-07-20 08:01:22,521] torch._dynamo.symbolic_convert: [DEBUG] TRACE POP_TOP None [ConstantVariable(NoneType)]
+TRACE starts_line <resume in func> slide/examples/onnxrt_add_print.py:17
+        c = c + c
+[2023-07-20 08:01:22,521] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST c []
+[2023-07-20 08:01:22,521] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST c [TensorVariable()]
+[2023-07-20 08:01:22,521] torch._dynamo.symbolic_convert: [DEBUG] TRACE BINARY_ADD None [TensorVariable(), TensorVariable()]
+[2023-07-20 08:01:22,521] torch._subclasses.fake_tensor: [DEBUG] FakeTensorMode.__torch_dispatch__: aten.add.Tensor
+[2023-07-20 08:01:22,522] torch._dynamo.symbolic_convert: [DEBUG] TRACE STORE_FAST c [TensorVariable()]
+TRACE starts_line <resume in func> slide/examples/onnxrt_add_print.py:18
+        return c
+[2023-07-20 08:01:22,522] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST c []
+[2023-07-20 08:01:22,522] torch._dynamo.symbolic_convert: [DEBUG] TRACE RETURN_VALUE None [TensorVariable()]
+[2023-07-20 08:01:22,522] torch._dynamo.symbolic_convert: [INFO] Step 1: torchdynamo done tracing <resume in func> (RETURN_VALUE)
+[2023-07-20 08:01:22,522] torch._dynamo.symbolic_convert: [DEBUG] RETURN_VALUE triggered compile
+[2023-07-20 08:01:22,522] torch._dynamo.output_graph: [DEBUG] COMPILING GRAPH due to GraphCompileReason(reason='return_value', user_stack=[<FrameSummary file slide/examples/onnxrt_add_print.py, line 18 in <resume in func>>], graph_break=False)
+TRACED GRAPH
+ ===== __compiled_fn_2 =====
+ <eval_with_key>.1 class GraphModule(torch.nn.Module):
+    def forward(self, L_c_ : torch.Tensor):
+        l_c_ = L_c_
+        
+        # File: slide/examples/onnxrt_add_print.py:17, code: c = c + c
+        add = l_c_ + l_c_;  l_c_ = None
+        return (add,)
+        
+
+TRACED GRAPH
+ __compiled_fn_2 <eval_with_key>.1 opcode         name    target                   args          kwargs
+-------------  ------  -----------------------  ------------  --------
+placeholder    l_c_    L_c_                     ()            {}
+call_function  add     <built-in function add>  (l_c_, l_c_)  {}
+output         output  output                   ((add,),)     {}
+
+TRACED GRAPH TENSOR SIZES
+===== __compiled_fn_2 =====
+l_c_: (2,)
+add: (2,)
+
+[2023-07-20 08:01:22,523] torch._dynamo.output_graph: [INFO] Step 2: calling compiler function onnxrt
+/repos/gglin001/pytorch/torch/jit/_check.py:172: UserWarning: The TorchScript type system doesn't support instance-level annotations on empty non-base types in `__init__`. Instead, either 1) use a type annotation in the class body, or 2) wrap the type in `torch.jit.Attribute`.
+  warnings.warn("The TorchScript type system doesn't support "
+[2023-07-20 08:01:22,538] torch._dynamo.output_graph: [INFO] Step 2: done compiler function onnxrt
+ORIGINAL BYTECODE <resume in func> slide/examples/onnxrt_add_print.py line 16 
+ 16           0 LOAD_FAST                0 (___stack0)
+              2 JUMP_ABSOLUTE           18
+              4 LOAD_FAST                2 (a)
+              6 LOAD_FAST                3 (b)
+              8 BINARY_ADD
+             10 STORE_FAST               1 (c)
+             12 LOAD_GLOBAL              0 (print)
+             14 LOAD_CONST               1 ('run_func')
+             16 CALL_FUNCTION            1
+        >>   18 POP_TOP
+
+ 17          20 LOAD_FAST                1 (c)
+             22 LOAD_FAST                1 (c)
+             24 BINARY_ADD
+             26 STORE_FAST               1 (c)
+
+ 18          28 LOAD_FAST                1 (c)
+             30 RETURN_VALUE
+
+
+MODIFIED BYTECODE <resume in func> slide/examples/onnxrt_add_print.py line 16 
+ 16           0 LOAD_GLOBAL              1 (__compiled_fn_2)
+              2 LOAD_FAST                1 (c)
+              4 CALL_FUNCTION            1
+              6 UNPACK_SEQUENCE          1
+              8 RETURN_VALUE
+
+
+[2023-07-20 08:01:22,539] torch.fx.experimental.symbolic_shapes: [INFO] 1.0: produce_guards
+[2023-07-20 08:01:22,539] torch.fx.experimental.symbolic_shapes: [DEBUG] 1.0: Skipping guard L['c'].size()[0] == 2
+[2023-07-20 08:01:22,539] torch.fx.experimental.symbolic_shapes: [DEBUG] 1.0: Skipping guard L['c'].stride()[0] == 1
+[2023-07-20 08:01:22,539] torch.fx.experimental.symbolic_shapes: [DEBUG] 1.0: Skipping guard L['c'].storage_offset() == 0
+[2023-07-20 08:01:22,539] torch._utils_internal: [INFO] dynamic produce_guards: {'co_name': '<resume in func>', 'co_filename': 'slide/examples/onnxrt_add_print.py', 'co_firstlineno': 16, 'num_guards': 0, 'free_symbols': 0}
+GUARDS:
+  hasattr(L['c'], '_dynamo_dynamic_indices') == False
+  not ___is_grad_enabled()
+  not ___are_deterministic_algorithms_enabled()
+  ___is_torch_function_enabled()
+  utils_device.CURRENT_DEVICE == None
+[2023-07-20 08:01:22,540] torch._dynamo.eval_frame: [DEBUG] skipping __call__ /opt/conda/envs/pyenv/lib/python3.8/weakref.py
+[2023-07-20 08:01:22,540] torch._dynamo.eval_frame: [DEBUG] skipping del_ten /repos/gglin001/pytorch/torch/_subclasses/meta_utils.py
+[2023-07-20 08:01:22,540] torch._dynamo.eval_frame: [DEBUG] skipping pop /opt/conda/envs/pyenv/lib/python3.8/weakref.py
+[2023-07-20 08:01:22,540] torch._dynamo.eval_frame: [DEBUG] skipping __hash__ /repos/gglin001/pytorch/torch/utils/weak.py
+[2023-07-20 08:01:22,540] torch._dynamo.eval_frame: [DEBUG] skipping expired /repos/gglin001/pytorch/torch/multiprocessing/reductions.py
+[2023-07-20 08:01:22,540] torch._dynamo.eval_frame: [DEBUG] skipping _expired /repos/gglin001/pytorch/torch/storage.py
+========= Diagnostic Run torch.onnx.export version 2.1.0a0+gitdfc9874 ==========
+verbose: False, log level: 40
+======================= 0 NONE 0 NOTE 0 WARNING 0 ERROR ========================
+
+run_func
+========= Diagnostic Run torch.onnx.export version 2.1.0a0+gitdfc9874 ==========
+verbose: False, log level: 40
+======================= 0 NONE 0 NOTE 0 WARNING 0 ERROR ========================
+
+out: tensor([-3.1694, -0.5898])
+run_func
+raw_out: tensor([-3.1694, -0.5898])
+[2023-07-20 08:01:22,542] torch._dynamo.utils: [INFO] TorchDynamo compilation metrics:
+[2023-07-20 08:01:22,542] torch._dynamo.utils: [INFO] Function                          Runtimes (s)
+[2023-07-20 08:01:22,542] torch._dynamo.utils: [INFO] ------------------------------  --------------
+[2023-07-20 08:01:22,542] torch._dynamo.utils: [INFO] _compile                                0.1345
+[2023-07-20 08:01:22,542] torch._dynamo.utils: [INFO] OutputGraph.call_user_compiler          0.065
