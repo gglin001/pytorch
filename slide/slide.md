@@ -22,11 +22,11 @@ Jul 20 2023
 
 # torchdynamo
 
+https://pytorch.org/docs/main/compile/technical-overview.html
+
 all starts from:
 
 ![width:700px](./imgs/TorchDynamo.png)
-
-<!-- https://pytorch.org/docs/stable/dynamo/index.html -->
 
 ---
 
@@ -40,8 +40,8 @@ https://peps.python.org/pep-0523/
 
 # torch.fx
 
-- Python-based IR
-- Support Python code generation
+- Python-based IR, see [`torch.fx.Node`](https://pytorch.org/docs/main/fx.html#torch.fx.Node)
+- Support Python code generation, see demos below
 
 ref:
 
@@ -84,7 +84,7 @@ Speed up bytecode interpretation through caching
 
 # Backend
 
-- https://github.com/pytorch/pytorch/blob/main/docs/source/compile/custom-backends.rst
+- https://pytorch.org/docs/main/compile/custom-backends.html
 
 - traced Graph is wrapped into `torch.fx.GraphModule`, it is "normal" `torch.nn.Module`
 
