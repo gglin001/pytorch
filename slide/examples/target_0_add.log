@@ -1,0 +1,121 @@
+[2023-07-20 06:40:03,940] torch._dynamo.eval_frame: [DEBUG] skipping __init__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:03,940] torch._dynamo.eval_frame: [DEBUG] skipping __enter__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:03,940] torch._dynamo.eval_frame: [DEBUG] skipping helper /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:03,940] torch._dynamo.eval_frame: [DEBUG] skipping __init__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:03,940] torch._dynamo.eval_frame: [DEBUG] skipping __enter__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:03,940] torch._dynamo.eval_frame: [DEBUG] skipping enable_dynamic /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-07-20 06:40:03,941] torch._utils_internal: [INFO] dynamo _convert_frame_assert._compile: {'co_name': 'add', 'co_filename': 'slide/examples/target_0_add.py', 'co_firstlineno': 25, 'cache_size': 0}
+[2023-07-20 06:40:03,941] torch._dynamo.symbolic_convert: [INFO] Step 1: torchdynamo start tracing add slide/examples/target_0_add.py:25
+[2023-07-20 06:40:03,941] torch.fx.experimental.symbolic_shapes: [INFO] 0.0: create_env
+[2023-07-20 06:40:03,942] torch._subclasses.fake_tensor: [DEBUG] create_mode 0x7f4387d6cac0
+TRACE starts_line add slide/examples/target_0_add.py:25
+    @dynamo.optimize(my_compiler)
+[2023-07-20 06:40:03,967] torch._dynamo.variables.builder: [DEBUG] wrap_to_fake L['a'] (10,) [<DimDynamic.STATIC: 2>] [None]
+[2023-07-20 06:40:03,968] torch._dynamo.variables.builder: [DEBUG] wrap_to_fake L['b'] (10,) [<DimDynamic.STATIC: 2>] [None]
+TRACE starts_line add slide/examples/target_0_add.py:27
+        c = a + b
+[2023-07-20 06:40:03,968] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST a []
+[2023-07-20 06:40:03,968] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST b [TensorVariable()]
+[2023-07-20 06:40:03,968] torch._dynamo.symbolic_convert: [DEBUG] TRACE BINARY_ADD None [TensorVariable(), TensorVariable()]
+[2023-07-20 06:40:03,969] torch._subclasses.fake_tensor: [DEBUG] FakeTensorMode.__torch_dispatch__: aten.add.Tensor
+[2023-07-20 06:40:03,970] torch._dynamo.symbolic_convert: [DEBUG] TRACE STORE_FAST c [TensorVariable()]
+TRACE starts_line add slide/examples/target_0_add.py:28
+        return c
+[2023-07-20 06:40:03,970] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST c []
+[2023-07-20 06:40:03,970] torch._dynamo.symbolic_convert: [DEBUG] TRACE RETURN_VALUE None [TensorVariable()]
+[2023-07-20 06:40:03,970] torch._dynamo.symbolic_convert: [INFO] Step 1: torchdynamo done tracing add (RETURN_VALUE)
+[2023-07-20 06:40:03,970] torch._dynamo.symbolic_convert: [DEBUG] RETURN_VALUE triggered compile
+[2023-07-20 06:40:03,970] torch._dynamo.output_graph: [DEBUG] COMPILING GRAPH due to GraphCompileReason(reason='return_value', user_stack=[<FrameSummary file slide/examples/target_0_add.py, line 28 in add>], graph_break=False)
+TRACED GRAPH
+ ===== __compiled_fn_0 =====
+ <eval_with_key>.0 class GraphModule(torch.nn.Module):
+    def forward(self, L_a_ : torch.Tensor, L_b_ : torch.Tensor):
+        l_a_ = L_a_
+        l_b_ = L_b_
+        
+        # File: slide/examples/target_0_add.py:27, code: c = a + b
+        add = l_a_ + l_b_;  l_a_ = l_b_ = None
+        return (add,)
+        
+
+TRACED GRAPH
+ __compiled_fn_0 <eval_with_key>.0 opcode         name    target                   args          kwargs
+-------------  ------  -----------------------  ------------  --------
+placeholder    l_a_    L_a_                     ()            {}
+placeholder    l_b_    L_b_                     ()            {}
+call_function  add     <built-in function add>  (l_a_, l_b_)  {}
+output         output  output                   ((add,),)     {}
+
+TRACED GRAPH TENSOR SIZES
+===== __compiled_fn_0 =====
+l_a_: (10,)
+l_b_: (10,)
+add: (10,)
+
+[2023-07-20 06:40:03,975] torch._dynamo.output_graph: [INFO] Step 2: calling compiler function my_compiler
+[2023-07-20 06:40:03,975] torch._dynamo.output_graph: [INFO] Step 2: done compiler function my_compiler
+ORIGINAL BYTECODE add slide/examples/target_0_add.py line 25 
+ 27           0 LOAD_FAST                0 (a)
+              2 LOAD_FAST                1 (b)
+              4 BINARY_ADD
+              6 STORE_FAST               2 (c)
+
+ 28           8 LOAD_FAST                2 (c)
+             10 RETURN_VALUE
+
+
+MODIFIED BYTECODE add slide/examples/target_0_add.py line 25 
+ 25           0 LOAD_GLOBAL              0 (__compiled_fn_0)
+              2 LOAD_FAST                0 (a)
+              4 LOAD_FAST                1 (b)
+              6 CALL_FUNCTION            2
+              8 UNPACK_SEQUENCE          1
+             10 RETURN_VALUE
+
+
+[2023-07-20 06:40:03,996] torch.fx.experimental.symbolic_shapes: [INFO] 0.0: produce_guards
+[2023-07-20 06:40:03,997] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['a'].size()[0] == 10
+[2023-07-20 06:40:03,997] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['a'].stride()[0] == 1
+[2023-07-20 06:40:03,997] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['a'].storage_offset() == 0
+[2023-07-20 06:40:03,997] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['b'].size()[0] == 10
+[2023-07-20 06:40:03,997] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['b'].stride()[0] == 1
+[2023-07-20 06:40:03,997] torch.fx.experimental.symbolic_shapes: [DEBUG] 0.0: Skipping guard L['b'].storage_offset() == 0
+[2023-07-20 06:40:03,997] torch._utils_internal: [INFO] dynamic produce_guards: {'co_name': 'add', 'co_filename': 'slide/examples/target_0_add.py', 'co_firstlineno': 25, 'num_guards': 0, 'free_symbols': 0}
+GUARDS:
+  hasattr(L['a'], '_dynamo_dynamic_indices') == False
+  hasattr(L['b'], '_dynamo_dynamic_indices') == False
+  ___is_grad_enabled()
+  not ___are_deterministic_algorithms_enabled()
+  ___is_torch_function_enabled()
+  utils_device.CURRENT_DEVICE == None
+[2023-07-20 06:40:04,000] torch._dynamo.eval_frame: [DEBUG] skipping _fn /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-07-20 06:40:04,000] torch._dynamo.eval_frame: [DEBUG] skipping nothing /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-07-20 06:40:04,000] torch._dynamo.eval_frame: [DEBUG] skipping __exit__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:04,000] torch._dynamo.eval_frame: [DEBUG] skipping __exit__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+my_compiler() called with FX graph:
+  5           0 LOAD_FAST                1 (L_a_)
+              2 STORE_FAST               3 (l_a_)
+
+  6           4 LOAD_FAST                2 (L_b_)
+              6 STORE_FAST               4 (l_b_)
+
+  7           8 LOAD_FAST                3 (l_a_)
+             10 LOAD_FAST                4 (l_b_)
+             12 BINARY_ADD
+             14 STORE_FAST               5 (add)
+             16 LOAD_CONST               0 (None)
+             18 DUP_TOP
+             20 STORE_FAST               3 (l_a_)
+             22 STORE_FAST               4 (l_b_)
+
+  8          24 LOAD_FAST                5 (add)
+             26 BUILD_TUPLE              1
+             28 RETURN_VALUE
+
+res: tensor([-0.8012, -0.0754, -0.4837,  0.2684,  2.1483, -2.2352, -0.1323, -0.5243,
+        -0.5947,  1.8340])
+[2023-07-20 06:40:04,001] torch._dynamo.utils: [INFO] TorchDynamo compilation metrics:
+[2023-07-20 06:40:04,001] torch._dynamo.utils: [INFO] Function                          Runtimes (s)
+[2023-07-20 06:40:04,001] torch._dynamo.utils: [INFO] ------------------------------  --------------
+[2023-07-20 06:40:04,001] torch._dynamo.utils: [INFO] _compile                                0.059
+[2023-07-20 06:40:04,001] torch._dynamo.utils: [INFO] OutputGraph.call_user_compiler          0.0002

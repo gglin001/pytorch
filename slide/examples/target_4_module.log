@@ -1,0 +1,246 @@
+[2023-07-20 06:40:12,749] torch._dynamo.eval_frame: [DEBUG] skipping __init__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:12,749] torch._dynamo.eval_frame: [DEBUG] skipping __enter__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:12,749] torch._dynamo.eval_frame: [DEBUG] skipping helper /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:12,749] torch._dynamo.eval_frame: [DEBUG] skipping __init__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:12,749] torch._dynamo.eval_frame: [DEBUG] skipping __enter__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:12,749] torch._dynamo.eval_frame: [DEBUG] skipping enable_dynamic /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-07-20 06:40:12,749] torch._dynamo.eval_frame: [DEBUG] skipping _wrapped_call_impl /repos/gglin001/pytorch/torch/nn/modules/module.py
+[2023-07-20 06:40:12,749] torch._dynamo.eval_frame: [DEBUG] skipping _call_impl /repos/gglin001/pytorch/torch/nn/modules/module.py
+[2023-07-20 06:40:12,749] torch._dynamo.symbolic_convert: [INFO] Step 1: torchdynamo start tracing forward slide/examples/target_4_module.py:28
+TRACE starts_line forward slide/examples/target_4_module.py:28
+        def forward(self, x):
+[2023-07-20 06:40:12,776] torch._dynamo.variables.builder: [DEBUG] wrap_to_fake L['x'] (10, 10) [<DimDynamic.STATIC: 2>, <DimDynamic.STATIC: 2>] [None, None]
+TRACE starts_line forward slide/examples/target_4_module.py:29
+            x -= 1.0  # sum ==1
+[2023-07-20 06:40:12,777] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST x []
+[2023-07-20 06:40:12,777] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_CONST 1.0 [TensorVariable()]
+[2023-07-20 06:40:12,777] torch._dynamo.symbolic_convert: [DEBUG] TRACE INPLACE_SUBTRACT None [TensorVariable(), ConstantVariable(float)]
+[2023-07-20 06:40:12,778] torch._dynamo.symbolic_convert: [DEBUG] TRACE STORE_FAST x [TensorVariable()]
+TRACE starts_line forward slide/examples/target_4_module.py:30
+            if x.sum() > 0.0:
+[2023-07-20 06:40:12,778] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST x []
+[2023-07-20 06:40:12,778] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_ATTR sum [TensorVariable()]
+[2023-07-20 06:40:12,778] torch._dynamo.symbolic_convert: [DEBUG] TRACE CALL_FUNCTION 0 [GetAttrVariable(TensorVariable(), sum)]
+[2023-07-20 06:40:12,780] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_CONST 0.0 [TensorVariable()]
+[2023-07-20 06:40:12,780] torch._dynamo.symbolic_convert: [DEBUG] TRACE COMPARE_OP > [TensorVariable(), ConstantVariable(float)]
+[2023-07-20 06:40:12,781] torch._dynamo.symbolic_convert: [DEBUG] TRACE POP_JUMP_IF_FALSE 38 [TensorVariable()]
+[2023-07-20 06:40:12,781] torch._dynamo.symbolic_convert: [DEBUG] generic_jump triggered compile
+[2023-07-20 06:40:12,781] torch._dynamo.output_graph: [DEBUG] COMPILING GRAPH due to GraphCompileReason(reason='generic_jump TensorVariable()', user_stack=[<FrameSummary file slide/examples/target_4_module.py, line 30 in forward>], graph_break=True)
+TRACED GRAPH
+ ===== __compiled_fn_0 =====
+ <eval_with_key>.0 class GraphModule(torch.nn.Module):
+    def forward(self, L_x_ : torch.Tensor):
+        l_x_ = L_x_
+        
+        # File: slide/examples/target_4_module.py:29, code: x -= 1.0  # sum ==1
+        l_x_ -= 1.0;  isub = l_x_;  l_x_ = None
+        
+        # File: slide/examples/target_4_module.py:30, code: if x.sum() > 0.0:
+        sum_1 = isub.sum()
+        gt = sum_1 > 0.0;  sum_1 = None
+        return (isub, gt)
+        
+
+TRACED GRAPH
+ __compiled_fn_0 <eval_with_key>.0 opcode         name    target                    args           kwargs
+-------------  ------  ------------------------  -------------  --------
+placeholder    l_x_    L_x_                      ()             {}
+call_function  isub    <built-in function isub>  (l_x_, 1.0)    {}
+call_method    sum_1   sum                       (isub,)        {}
+call_function  gt      <built-in function gt>    (sum_1, 0.0)   {}
+output         output  output                    ((isub, gt),)  {}
+
+TRACED GRAPH TENSOR SIZES
+===== __compiled_fn_0 =====
+l_x_: (10, 10)
+isub: (10, 10)
+sum_1: ()
+gt: ()
+
+[2023-07-20 06:40:12,785] torch._dynamo.output_graph: [INFO] Step 2: calling compiler function my_compiler
+[2023-07-20 06:40:12,785] torch._dynamo.output_graph: [INFO] Step 2: done compiler function my_compiler
+ORIGINAL BYTECODE forward slide/examples/target_4_module.py line 28 
+ 29           0 LOAD_FAST                1 (x)
+              2 LOAD_CONST               1 (1.0)
+              4 INPLACE_SUBTRACT
+              6 STORE_FAST               1 (x)
+
+ 30           8 LOAD_FAST                1 (x)
+             10 LOAD_METHOD              0 (sum)
+             12 CALL_METHOD              0
+             14 LOAD_CONST               2 (0.0)
+             16 COMPARE_OP               4 (>)
+             18 POP_JUMP_IF_FALSE       38
+
+ 31          20 LOAD_FAST                1 (x)
+             22 LOAD_CONST               1 (1.0)
+             24 INPLACE_ADD
+             26 STORE_FAST               1 (x)
+
+ 32          28 LOAD_FAST                0 (self)
+             30 LOAD_METHOD              1 (linear)
+             32 LOAD_FAST                1 (x)
+             34 CALL_METHOD              1
+             36 RETURN_VALUE
+
+ 33     >>   38 LOAD_FAST                1 (x)
+             40 LOAD_CONST               3 (3.0)
+             42 INPLACE_ADD
+             44 STORE_FAST               1 (x)
+
+ 34          46 LOAD_FAST                0 (self)
+             48 LOAD_METHOD              2 (relu)
+             50 LOAD_FAST                0 (self)
+             52 LOAD_METHOD              1 (linear)
+             54 LOAD_FAST                1 (x)
+             56 CALL_METHOD              1
+             58 CALL_METHOD              1
+             60 RETURN_VALUE
+
+
+MODIFIED BYTECODE forward slide/examples/target_4_module.py line 28 
+ 28           0 LOAD_GLOBAL              3 (__compiled_fn_0)
+              2 LOAD_FAST                1 (x)
+              4 CALL_FUNCTION            1
+              6 UNPACK_SEQUENCE          2
+              8 STORE_FAST               1 (x)
+             10 POP_JUMP_IF_FALSE       22
+             12 LOAD_GLOBAL              4 (__resume_at_20_1)
+             14 LOAD_FAST                0 (self)
+             16 LOAD_FAST                1 (x)
+             18 CALL_FUNCTION            2
+             20 RETURN_VALUE
+        >>   22 LOAD_GLOBAL              5 (__resume_at_38_2)
+             24 LOAD_FAST                0 (self)
+             26 LOAD_FAST                1 (x)
+             28 CALL_FUNCTION            2
+             30 RETURN_VALUE
+
+
+GUARDS:
+  hasattr(L['x'], '_dynamo_dynamic_indices') == False
+  ___is_grad_enabled()
+  not ___are_deterministic_algorithms_enabled()
+  ___is_torch_function_enabled()
+  utils_device.CURRENT_DEVICE == None
+[2023-07-20 06:40:12,812] torch._dynamo.eval_frame: [DEBUG] skipping _fn /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-07-20 06:40:12,812] torch._dynamo.eval_frame: [DEBUG] skipping nothing /repos/gglin001/pytorch/torch/_dynamo/eval_frame.py
+[2023-07-20 06:40:12,812] torch._dynamo.eval_frame: [DEBUG] skipping __exit__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:12,812] torch._dynamo.eval_frame: [DEBUG] skipping __exit__ /opt/conda/envs/pyenv/lib/python3.8/contextlib.py
+[2023-07-20 06:40:12,812] torch._dynamo.symbolic_convert: [INFO] Step 1: torchdynamo start tracing <resume in forward> slide/examples/target_4_module.py:30
+TRACE starts_line <resume in forward> slide/examples/target_4_module.py:30
+            if x.sum() > 0.0:
+[2023-07-20 06:40:12,813] torch._dynamo.variables.builder: [DEBUG] wrap_to_fake L['x'] (10, 10) [<DimDynamic.STATIC: 2>, <DimDynamic.STATIC: 2>] [None, None]
+[2023-07-20 06:40:12,813] torch._dynamo.symbolic_convert: [DEBUG] TRACE JUMP_ABSOLUTE 40 []
+TRACE starts_line <resume in forward> slide/examples/target_4_module.py:33
+            x += 3.0
+[2023-07-20 06:40:12,813] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST x []
+[2023-07-20 06:40:12,813] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_CONST 3.0 [TensorVariable()]
+[2023-07-20 06:40:12,813] torch._dynamo.symbolic_convert: [DEBUG] TRACE INPLACE_ADD None [TensorVariable(), ConstantVariable(float)]
+[2023-07-20 06:40:12,814] torch._dynamo.symbolic_convert: [DEBUG] TRACE STORE_FAST x [TensorVariable()]
+TRACE starts_line <resume in forward> slide/examples/target_4_module.py:34
+            return self.relu(self.linear(x))
+[2023-07-20 06:40:12,814] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST self []
+[2023-07-20 06:40:12,814] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_ATTR relu [NNModuleVariable()]
+[2023-07-20 06:40:12,815] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST self [NNModuleVariable()]
+[2023-07-20 06:40:12,815] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_ATTR linear [NNModuleVariable(), NNModuleVariable()]
+[2023-07-20 06:40:12,815] torch._dynamo.symbolic_convert: [DEBUG] TRACE LOAD_FAST x [NNModuleVariable(), NNModuleVariable()]
+[2023-07-20 06:40:12,815] torch._dynamo.symbolic_convert: [DEBUG] TRACE CALL_FUNCTION 1 [NNModuleVariable(), NNModuleVariable(), TensorVariable()]
+[2023-07-20 06:40:12,819] torch._dynamo.symbolic_convert: [DEBUG] TRACE CALL_FUNCTION 1 [NNModuleVariable(), TensorVariable()]
+[2023-07-20 06:40:12,821] torch._dynamo.symbolic_convert: [DEBUG] TRACE RETURN_VALUE None [TensorVariable()]
+[2023-07-20 06:40:12,821] torch._dynamo.symbolic_convert: [INFO] Step 1: torchdynamo done tracing <resume in forward> (RETURN_VALUE)
+[2023-07-20 06:40:12,821] torch._dynamo.symbolic_convert: [DEBUG] RETURN_VALUE triggered compile
+[2023-07-20 06:40:12,821] torch._dynamo.output_graph: [DEBUG] COMPILING GRAPH due to GraphCompileReason(reason='return_value', user_stack=[<FrameSummary file slide/examples/target_4_module.py, line 34 in <resume in forward>>], graph_break=False)
+TRACED GRAPH
+ ===== __compiled_fn_3 =====
+ <eval_with_key>.1 class GraphModule(torch.nn.Module):
+    def forward(self, L_x_ : torch.Tensor):
+        l_x_ = L_x_
+        
+        # File: slide/examples/target_4_module.py:33, code: x += 3.0
+        l_x_ += 3.0;  iadd = l_x_;  l_x_ = None
+        
+        # File: slide/examples/target_4_module.py:34, code: return self.relu(self.linear(x))
+        l__self___linear = self.L__self___linear(iadd);  iadd = None
+        l__self___relu = self.L__self___relu(l__self___linear);  l__self___linear = None
+        return (l__self___relu,)
+        
+
+TRACED GRAPH
+ __compiled_fn_3 <eval_with_key>.1 opcode         name              target                    args                  kwargs
+-------------  ----------------  ------------------------  --------------------  --------
+placeholder    l_x_              L_x_                      ()                    {}
+call_function  iadd              <built-in function iadd>  (l_x_, 3.0)           {}
+call_module    l__self___linear  L__self___linear          (iadd,)               {}
+call_module    l__self___relu    L__self___relu            (l__self___linear,)   {}
+output         output            output                    ((l__self___relu,),)  {}
+
+TRACED GRAPH TENSOR SIZES
+===== __compiled_fn_3 =====
+l_x_: (10, 10)
+iadd: (10, 10)
+l__self___linear: (10, 10)
+l__self___relu: (10, 10)
+
+[2023-07-20 06:40:12,822] torch._dynamo.output_graph: [INFO] Step 2: calling compiler function my_compiler
+[2023-07-20 06:40:12,822] torch._dynamo.output_graph: [INFO] Step 2: done compiler function my_compiler
+ORIGINAL BYTECODE <resume in forward> slide/examples/target_4_module.py line 30 
+ 30           0 JUMP_ABSOLUTE           40
+              2 LOAD_FAST                1 (x)
+              4 LOAD_CONST               1 (1.0)
+              6 INPLACE_SUBTRACT
+              8 STORE_FAST               1 (x)
+             10 LOAD_FAST                1 (x)
+             12 LOAD_ATTR                0 (sum)
+             14 CALL_FUNCTION            0
+             16 LOAD_CONST               2 (0.0)
+             18 COMPARE_OP               4 (>)
+             20 POP_JUMP_IF_FALSE       40
+             22 LOAD_FAST                1 (x)
+             24 LOAD_CONST               1 (1.0)
+             26 INPLACE_ADD
+             28 STORE_FAST               1 (x)
+             30 LOAD_FAST                0 (self)
+             32 LOAD_ATTR                1 (linear)
+             34 LOAD_FAST                1 (x)
+             36 CALL_FUNCTION            1
+             38 RETURN_VALUE
+
+ 33     >>   40 LOAD_FAST                1 (x)
+             42 LOAD_CONST               3 (3.0)
+             44 INPLACE_ADD
+             46 STORE_FAST               1 (x)
+
+ 34          48 LOAD_FAST                0 (self)
+             50 LOAD_ATTR                2 (relu)
+             52 LOAD_FAST                0 (self)
+             54 LOAD_ATTR                1 (linear)
+             56 LOAD_FAST                1 (x)
+             58 CALL_FUNCTION            1
+             60 CALL_FUNCTION            1
+             62 RETURN_VALUE
+
+
+MODIFIED BYTECODE <resume in forward> slide/examples/target_4_module.py line 30 
+ 30           0 LOAD_GLOBAL              3 (__compiled_fn_3)
+              2 LOAD_FAST                1 (x)
+              4 CALL_FUNCTION            1
+              6 UNPACK_SEQUENCE          1
+              8 RETURN_VALUE
+
+
+GUARDS:
+  hasattr(L['x'], '_dynamo_dynamic_indices') == False
+  ___check_obj_id(L['self'], 140286721728816)
+  ___is_grad_enabled()
+  not ___are_deterministic_algorithms_enabled()
+  ___is_torch_function_enabled()
+  utils_device.CURRENT_DEVICE == None
+my_compiler() called with FX graph:
+my_compiler() called with FX graph:
+torch.Size([10, 10])
+[2023-07-20 06:40:12,824] torch._dynamo.utils: [INFO] TorchDynamo compilation metrics:
+[2023-07-20 06:40:12,824] torch._dynamo.utils: [INFO] Function                          Runtimes (s)
+[2023-07-20 06:40:12,824] torch._dynamo.utils: [INFO] ------------------------------  --------------
+[2023-07-20 06:40:12,824] torch._dynamo.utils: [INFO] _compile                                0.0745
+[2023-07-20 06:40:12,824] torch._dynamo.utils: [INFO] OutputGraph.call_user_compiler          0.0002
