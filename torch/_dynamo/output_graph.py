@@ -777,6 +777,7 @@ class OutputGraph(Checkpointable[OutputGraphState]):
             self.add_output_instructions(random_calls_instructions)
 
         if (
+            False and
             stack_values
             and all(
                 not isinstance(v, (UnspecializedPythonVariable, NumpyNdarrayVariable))

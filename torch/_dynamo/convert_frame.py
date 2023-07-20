@@ -457,8 +457,9 @@ def _compile(
         output_codes.add(out_code)
 
         def log_bytecode(prefix, name, filename, line_no, code):
-            if bytecode_log.isEnabledFor(logging.DEBUG):
-                bytecode_log.debug(
+            # if bytecode_log.isEnabledFor(logging.DEBUG):
+            if 1:
+                bytecode_log.error(
                     format_bytecode(prefix, name, filename, line_no, code)
                 )
 

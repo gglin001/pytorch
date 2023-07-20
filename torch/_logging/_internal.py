@@ -371,7 +371,7 @@ def register_log(setting_name, log_name):
     log_registry.register_log(setting_name, log_name)
 
 
-def register_artifact(setting_name, off_by_default=False, log_format=None):
+def register_artifact(setting_name, off_by_default=False, log_format='%(message)s'):
     """
     Enables an artifact to be controlled by the env var and user API with name
     Args:
