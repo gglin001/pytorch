@@ -69,6 +69,9 @@ def onnxrt(gm, example_inputs, *, filename=None, provider=None):
     input_names = [f"i{i}" for i in range(len(example_inputs))]
     output_names = [f"o{x}" for x in range(len(example_outputs))]
 
+    # patch
+    example_inputs = tuple(example_inputs)
+
     torch.onnx.export(
         torch.jit.script(gm),
         example_inputs,

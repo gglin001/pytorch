@@ -41,11 +41,11 @@ https://peps.python.org/pep-0523/
 # torch.fx
 
 - Python-based IR
-- support Python code generation
+- Support Python code generation
 
 ref:
 
-- https://pytorch.org/docs/stable/fx.html
+- https://pytorch.org/docs/main/fx.html
 - https://arxiv.org/abs/2112.08429
 
 ---
@@ -86,8 +86,29 @@ Speed up bytecode interpretation through caching
 
 - https://github.com/pytorch/pytorch/blob/main/docs/source/compile/custom-backends.rst
 
-- torch/\_dynamo/backends
-  check `torch/_dynamo/backends/onnxrt.py` for a quick review
+- traced Graph is wrapped into `torch.fx.GraphModule`, it is "normal" `torch.nn.Module`
+
+## onnxrt
+
+- check `torch/_dynamo/backends/onnxrt.py`
+- onnxrt_add.py
+
+---
+
+# reference
+
+all scripts are available at:
+
+- https://github.com/gglin001/pytorch/tree/allen/thu_tea_230720/slide
+
+more about torch(2.0+):
+
+- https://pytorch.org/get-started/pytorch-2.0
+- https://pytorch.org/docs/main/compile/index.html
+
+pytorch dev-discuss(compiler)
+
+- https://dev-discuss.pytorch.org/c/compiler/5
 
 ---
 
