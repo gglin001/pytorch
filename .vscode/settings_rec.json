@@ -1,5 +1,4 @@
 {
-    // https://github.com/gglin001/Dockerfiles/blob/master/pytorch/Dockerfile
     "cmake.configureSettings": {
         // "CMAKE_PREFIX_PATH": "/opt/conda/envs/pyenv",
         // "CMAKE_SYSROOT": "/opt/conda/envs/pyenv/x86_64-conda-linux-gnu/sysroot",
