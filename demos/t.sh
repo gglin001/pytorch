@@ -4,7 +4,8 @@ pip install -r requirements.txt
 
 # build with cmake in vscode
 
-pip install -e .
+# pip install -e .
+python setup.py develop
 
 # DEBUG=1 \
 #   LD_LIBRARY_PATH=$(pwd)/build/lib \
