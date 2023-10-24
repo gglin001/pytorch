@@ -37,9 +37,10 @@ _side_effectful_functions: Set[Callable] = {
     _ops.aten.copy_.default,
     _ops.aten.sym_constrain_range.default,
     _ops.aten.sym_constrain_range_for_size.default,
-    _ops.profiler._record_function_enter,
     _ops.profiler._record_function_enter_new,
-    _ops.profiler._record_function_exit}
+    _ops.profiler._record_function_exit,
+    _ops.inductor.accumulate_grad_.default,
+}
 
 
 @compatibility(is_backward_compatible=False)
@@ -627,6 +628,13 @@ class Node:
         assert isinstance(new_args, tuple)
         assert isinstance(new_kwargs, dict)
         self.__update_args_kwargs(new_args, new_kwargs)
+
+    def _rename(self, candidate: str):
+        if candidate == self.name:
+            return
+        name = self.graph._graph_namespace.create_name(candidate, None)
+        self.name = name
+        self.graph._graph_namespace._rename_object(self, name)
 
 
 @compatibility(is_backward_compatible=True)
