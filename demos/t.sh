@@ -1,5 +1,8 @@
 pip install -r requirements.txt
 
+# shallow clone submodules
+git submodule update --recursive --init --depth=1
+
 # mamba install glog=0.4.0
 
 # build with cmake in vscode
