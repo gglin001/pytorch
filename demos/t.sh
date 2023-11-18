@@ -2,6 +2,7 @@ pip install -r requirements.txt
 
 # shallow clone submodules
 git submodule update --recursive --init --depth=1
+# git submodule update --recursive --shallow-submodules
 
 # mamba install glog=0.4.0
 
