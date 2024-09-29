@@ -1,0 +1,26 @@
+{
+  "version": 8,
+  "configurePresets": [
+    {
+      "name": "osx",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/torch",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_POSITION_INDEPENDENT_CODE": true,
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+        "CMAKE_INSTALL_RPATH_USE_LINK_PATH": true,
+        "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/build/bin",
+        "USE_MKLDNN": false,
+        "USE_GLOG": true,
+        "USE_OPENMP": false,
+        "USE_KINETO": true,
+        "BUILD_TEST": false,
+        "AA": "BB"
+      }
+    }
+  ]
+}

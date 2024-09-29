@@ -1030,6 +1030,9 @@ if(USE_XPU)
       message(FATAL_ERROR "Fail to clone ${TORCH_XPU_OPS_REPO_URL}")
     endif()
   endif()
+
+# use `ln -s`
+if(0)
   execute_process(
     COMMAND git fetch --quiet
     WORKING_DIRECTORY ${TORCH_XPU_OPS_DIR}
@@ -1044,6 +1047,7 @@ if(USE_XPU)
   if(NOT _exitcode EQUAL 0)
     message(FATAL_ERROR "Fail to checkout ${TORCH_XPU_OPS_REPO_URL} to ${TORCH_XPU_OPS_COMMIT}")
   endif()
+endif()
 
   set(TORCH_XPU_OPS_INCLUDE_DIRS
       ${TORCH_SRC_DIR}/csrc/api
