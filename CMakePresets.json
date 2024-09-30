@@ -21,6 +21,7 @@
         "USE_GLOG": true,
         "USE_KINETO": false,
         "USE_MKLDNN": false,
+        "USE_MPS": false,
         "USE_NCCL": false,
         "USE_NNPACK": false,
         "USE_OPENMP": false,
