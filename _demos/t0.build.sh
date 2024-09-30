@@ -7,7 +7,7 @@ git submodule update --recursive --init --depth=1
 
 # pip install -r requirements.txt
 
-pip install -e .
+pip install -e . -vvv
 # python setup.py develop
 
 ################################################################################

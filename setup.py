@@ -467,7 +467,7 @@ def mirror_files_into_torchgen():
 def build_deps():
     report("-- Building version " + version)
 
-    check_submodules()
+    # check_submodules()
     check_pydep("yaml", "pyyaml")
     build_python = not BUILD_LIBTORCH_WHL
     build_caffe2(
