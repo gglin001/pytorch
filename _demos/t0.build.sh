@@ -24,6 +24,7 @@ rm -rf build/CMakeFiles
 cmake --preset osx_allen -S. -Bbuild
 
 cmake --build build -t all
+# cmake --build build -t torch
 
 # for osx
 micromamba install findutils
@@ -31,6 +32,7 @@ micromamba install findutils
 # find build/lib/*.so -printf "%f\n" | xargs -d "\n" -I{} ln -s $PWD/build/lib/{} $PWD/torch/lib/{}
 find build/lib/*.dylib -printf "%f\n" | xargs -d "\n" -I{} ln -s $PWD/build/lib/{} $PWD/torch/lib/{}
 ln -s $PWD/build/functorch/functorch.so $PWD/functorch/functorch.so
+ln -s $PWD/build/bin $PWD/torch/bin
 
 ################################################################################
 

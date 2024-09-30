@@ -379,4 +379,6 @@ android/pytorch_android_torchvision/.cxx
 .stable_pyre_client
 .pyre_client
 
+torch/bin
 CMakeUserPresets.json
+.clangd
