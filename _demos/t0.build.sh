@@ -17,9 +17,12 @@ cmake --preset osx_allen -S. -Bbuild
 
 cmake --build build -t all
 
+# for zsh
+# micromamba install findutils
+
 # find build/lib/*.so -printf "%f\n" | xargs -d "\n" -I{} ln -s $PWD/build/lib/{} $PWD/torch/lib/{}
 # ln -s $PWD/build/functorch/functorch.so $PWD/functorch/functorch.so
 find build/lib/*.dylib -printf "%f\n" | xargs -d "\n" -I{} ln -s $PWD/build/lib/{} $PWD/torch/lib/{}
-ln -s $PWD/build/functorch/functorch.dylib $PWD/functorch/functorch.dylib
+ln -s $PWD/build/functorch/functorch.so $PWD/functorch/functorch.so
 
 ################################################################################
