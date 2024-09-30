@@ -8,6 +8,7 @@ endif()
 # Find SYCL library.
 find_package(SYCLToolkit REQUIRED)
 if(NOT SYCL_FOUND)
+  message(FATAL_ERROR "!!! NOT SYCL_FOUND")
   set(PYTORCH_FOUND_XPU FALSE)
   return()
 endif()
