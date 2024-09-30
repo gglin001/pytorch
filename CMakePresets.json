@@ -14,12 +14,31 @@
         "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
         "CMAKE_INSTALL_RPATH_USE_LINK_PATH": true,
         "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/build/bin",
-        "USE_MKLDNN": false,
         "USE_GLOG": true,
+        "USE_XPU": true,
+        "USE_MKLDNN": false,
         "USE_OPENMP": false,
-        "USE_KINETO": true,
-        "BUILD_TEST": false,
-        "AA": "BB"
+        "USE_CUDA": false,
+        "USE_KINETO": false,
+        "USE_PYTORCH_QNNPACK": false,
+        "USE_FBGEMM": false,
+        "USE_NNPACK": false,
+        "USE_XNNPACK": false,
+        "USE_DISTRIBUTED": false,
+        "BUILD_LAZY_TS_BACKEND": false
+      }
+    },
+    {
+      "name": "demo",
+      "inherits": "osx",
+      "environment": {
+        "SYCL_ROOT": "llvm-dpcpp-sycl/build/install"
+      },
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/gcc",
+        "CMAKE_CXX_COMPILER": "/usr/bin/g++",
+        "SYCL_COMPILER": "llvm-dpcpp-sycl/build/install/bin/clang++",
+        "SYCL_EXECUTABLE": "llvm-dpcpp-sycl/build/install/bin/clang++"
       }
     }
   ]
