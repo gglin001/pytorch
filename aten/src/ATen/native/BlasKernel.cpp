@@ -13,7 +13,7 @@
 #include <climits>
 #include <limits>
 
-#if defined(__aarch64__) && !defined(C10_MOBILE)
+#if 0
 #include <arm_neon.h>
 #endif
 

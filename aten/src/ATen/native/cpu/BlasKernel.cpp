@@ -326,7 +326,7 @@ void gemm_transab_(
   }
 }
 
-#if defined(__aarch64__) && !defined(C10_MOBILE)
+#if 0
 template <>
 void gemm_notrans_(
     int64_t m,
