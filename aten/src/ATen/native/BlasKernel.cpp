@@ -83,7 +83,7 @@ extern "C" void sgemv_(char *trans, int *m, int *n, float *alpha, float *a, int 
 namespace at::native {
 
 namespace blas_impl {
-#if defined(__aarch64__) && !defined(C10_MOBILE)
+#if 0
 void fp16_gemv_notrans(
     const int m,
     const int n,
@@ -217,7 +217,7 @@ INSTANTIATE(int8_t);
 INSTANTIATE(int16_t);
 INSTANTIATE(int);
 INSTANTIATE(int64_t);
-#if defined(__aarch64__) && !defined(C10_MOBILE)
+#if 0
 template <>
 bool scal_use_fast_path<at::Half>(C10_UNUSED int64_t n, C10_UNUSED int64_t incx) {
   return false;

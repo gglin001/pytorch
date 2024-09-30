@@ -6,7 +6,7 @@
 #include <c10/util/irange.h>
 #include <c10/util/Unroll.h>
 
-#if defined(__aarch64__) && !defined(C10_MOBILE)
+#if 0
 #include <arm_neon.h>
 
 namespace at::native::blas_impl {
