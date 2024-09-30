@@ -6,7 +6,9 @@
 
 include(FindPackageHandleStandardArgs)
 
-set(SYCL_ROOT "")
+# support cmake confing
+option(SYCL_ROOT "SYCL_ROOT" "")
+
 if(DEFINED ENV{SYCL_ROOT})
   set(SYCL_ROOT $ENV{SYCL_ROOT})
 elseif(DEFINED ENV{CMPLR_ROOT})
