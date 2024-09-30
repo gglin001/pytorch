@@ -312,7 +312,6 @@ GPATH
 tags
 TAGS
 
-
 # ccls file
 .ccls-cache/
 
@@ -381,3 +380,6 @@ android/pytorch_android_torchvision/.cxx
 
 core
 CMakeUserPresets.json
+
+# for symbol link path
+third_party/torch-xpu-ops
