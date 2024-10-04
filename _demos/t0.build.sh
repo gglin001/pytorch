@@ -1,5 +1,11 @@
 ################################################################################
 
+micromamba create -n torch python=3.12
+
+micromamba activate torch
+
+################################################################################
+
 git submodule update --recursive --init --depth=1
 
 # build with cmake
