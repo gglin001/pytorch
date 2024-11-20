@@ -19,7 +19,7 @@
         "USE_DISTRIBUTED": false,
         "USE_FBGEMM": false,
         "USE_GLOG": false,
-        "USE_KINETO": false,
+        "USE_KINETO": true,
         "USE_MKLDNN": false,
         "USE_MPS": false,
         "USE_NCCL": false,

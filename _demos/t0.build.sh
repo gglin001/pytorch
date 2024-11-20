@@ -6,7 +6,10 @@ micromamba activate torch
 
 ################################################################################
 
-git submodule update --recursive --init --depth=1
+# git submodule update --recursive --init --depth=1
+git submodule update --init --depth=1
+git submodule update --init --recursive --depth 1 third_party/kineto
+git submodule update --init --recursive --depth 1 third_party/tensorpipe
 
 # build with cmake
 # install with cmake
