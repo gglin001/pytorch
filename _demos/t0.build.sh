@@ -16,7 +16,8 @@ git submodule update --init --recursive --depth 1 third_party/tensorpipe
 
 # pip install -r requirements.txt
 
-pip install --no-build-isolation -i -e . -vvv
+pip install --no-build-isolation -e . -vvv
+# pip install --no-build-isolation -i -e . -vvv
 # python setup.py develop
 
 ################################################################################
@@ -50,3 +51,11 @@ cmake --build build --target help
 cmake --build build --target help >_demos/cmake.target.log
 
 ################################################################################
+
+python -c "import torch; print(torch.__file__)"
+
+python -c "import torch, pathlib; print(pathlib.Path(torch.__file__).parent)"
+
+python -c "import pip, pathlib; print(pathlib.Path(pip.__file__).parent.parent)"
+
+###############################################################################
