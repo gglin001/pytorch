@@ -16,7 +16,7 @@ git submodule update --init --recursive --depth 1 third_party/tensorpipe
 
 # pip install -r requirements.txt
 
-pip install -e . -vvv
+pip install --no-build-isolation -i -e . -vvv
 # python setup.py develop
 
 ################################################################################
@@ -38,8 +38,9 @@ cmake --build build -t all
 # for osx
 micromamba install findutils
 
-# find build/lib/*.so -printf "%f\n" | xargs -d "\n" -I{} ln -s $PWD/build/lib/{} $PWD/torch/lib/{}
+find build/lib/*.so -printf "%f\n" | xargs -d "\n" -I{} ln -s $PWD/build/lib/{} $PWD/torch/lib/{}
 find build/lib/*.dylib -printf "%f\n" | xargs -d "\n" -I{} ln -s $PWD/build/lib/{} $PWD/torch/lib/{}
+find build/lib/*.a -printf "%f\n" | xargs -d "\n" -I{} ln -s $PWD/build/lib/{} $PWD/torch/lib/{}
 ln -s $PWD/build/functorch/functorch.so $PWD/functorch/functorch.so
 ln -s $PWD/build/bin $PWD/torch/bin
 
