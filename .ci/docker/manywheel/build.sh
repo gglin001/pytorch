@@ -97,14 +97,7 @@ case ${GPU_ARCH_TYPE} in
             DEVTOOLSET_VERSION="11"
             GPU_IMAGE=rocm/dev-almalinux-8:${GPU_ARCH_VERSION}-complete
         fi
-        PYTORCH_ROCM_ARCH="gfx900;gfx906;gfx908;gfx90a;gfx942;gfx1030;gfx1100"
-        ROCM_REGEX="([0-9]+)\.([0-9]+)[\.]?([0-9]*)"
-        if [[ $GPU_ARCH_VERSION =~ $ROCM_REGEX ]]; then
-            ROCM_VERSION_INT=$((${BASH_REMATCH[1]}*10000 + ${BASH_REMATCH[2]}*100 + ${BASH_REMATCH[3]:-0}))
-        else
-            echo "ERROR: rocm regex failed"
-            exit 1
-        fi
+        PYTORCH_ROCM_ARCH="gfx900;gfx906;gfx908;gfx90a;gfx942;gfx1030;gfx1100;gfx1101;gfx1102"
         DOCKER_GPU_BUILD_ARG="--build-arg ROCM_VERSION=${GPU_ARCH_VERSION} --build-arg PYTORCH_ROCM_ARCH=${PYTORCH_ROCM_ARCH} --build-arg DEVTOOLSET_VERSION=${DEVTOOLSET_VERSION}"
         ;;
     xpu)
@@ -128,7 +121,8 @@ fi
 (
     set -x
 
-    if [ "$(uname -m)" != "s390x" ]; then
+    # Only activate this if in CI
+    if [ "$(uname -m)" != "s390x" ] && [ -v CI ]; then
         # TODO: Remove LimitNOFILE=1048576 patch once https://github.com/pytorch/test-infra/issues/5712
         # is resolved. This patch is required in order to fix timing out of Docker build on Amazon Linux 2023.
         sudo sed -i s/LimitNOFILE=infinity/LimitNOFILE=1048576/ /usr/lib/systemd/system/docker.service
