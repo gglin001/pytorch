@@ -1,8 +1,7 @@
 ################################################################################
 
-micromamba create -n torch python=3.12
-
-micromamba activate torch
+# micromamba create -n torch python=3.13
+# micromamba activate torch
 
 ################################################################################
 
@@ -11,21 +10,18 @@ git submodule update --init --depth=1
 git submodule update --init --recursive --depth 1 third_party/kineto
 git submodule update --init --recursive --depth 1 third_party/tensorpipe
 
+################################################################################
+
 # build with cmake
 # install with cmake
 
-# pip install -r requirements.txt
+pip install -r requirements.txt
 
 pip install --no-build-isolation -e . -vvv
 # pip install --no-build-isolation -i -e . -vvv
 # python setup.py develop
 
 ################################################################################
-
-# git submodule update --recursive --init --depth=1
-git submodule update --init --depth=1
-git submodule update --init --recursive --depth 1 third_party/kineto
-git submodule update --init --recursive --depth 1 third_party/tensorpipe
 
 rm -rf build/CMakeCache.txt
 rm -rf build/CMakeFiles
@@ -47,15 +43,8 @@ ln -s $PWD/build/bin $PWD/torch/bin
 
 ################################################################################
 
-cmake --build build --target help
-cmake --build build --target help >_demos/cmake.target.log
-
-################################################################################
-
 python -c "import torch; print(torch.__file__)"
-
 python -c "import torch, pathlib; print(pathlib.Path(torch.__file__).parent)"
-
 python -c "import pip, pathlib; print(pathlib.Path(pip.__file__).parent.parent)"
 
 ###############################################################################
