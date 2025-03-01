@@ -3,14 +3,14 @@
         "${workspaceFolder}",
     ],
     "terminal.integrated.env.osx": {
-        // "PYTHONPATH": "${workspaceFolder}",
-        // "GLOG_v": "10",
+        // "EXT_PYTHONPATH": "${workspaceFolder}",
         // "TORCH_CPP_LOG_LEVEL": "0",
         // "TORCH_CPP_LOG_LEVEL": "INFO",
         // "TORCH_DISTRIBUTED_DEBUG": "DETAIL",
         // "PYTORCH_JIT_LOG_LEVEL": ">>graph_helper:>>graph_fuser:>>kernel:>>interface",
         // "PYTORCH_JIT_TYPE_VERBOSITY": "3",
         // "TORCH_SHOW_CPP_STACKTRACES": "1",
+        // "TORCH_SHOW_DISPATCH_TRACE": "1",
     },
     "files.watcherExclude": {
         "**/.git/*/**": true,
@@ -20,10 +20,9 @@
     },
     "search.exclude": {
         "**/third_party/**": true,
-        "**/test/**": true,
         "**/benchmarks/**": true,
         "**/generated/**": false,
         "**/build/aten/**": false,
+        "/test/dynamo_*": true,
     },
-    "search.ripgrep.maxThreads": 10,
 }

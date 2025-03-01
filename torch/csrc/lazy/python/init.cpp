@@ -209,8 +209,7 @@ void initLazyBindings(PyObject* module) {
 
   lazy_ts_backend.def("_init", []() {
 #if !(defined(FBCODE_CAFFE2) || defined(OVRSOURCE))
-    // BUILD_LAZY_TS_BACKEND=false
-    // torch::lazy::InitTorchScriptBackend();
+    torch::lazy::InitTorchScriptBackend();
 #else
       TORCH_CHECK(false, "TorchScript backend not yet supported in FBCODE/OVRSOURCE builds");
 #endif // !(defined(FBCODE_CAFFE2) || defined(OVRSOURCE))
