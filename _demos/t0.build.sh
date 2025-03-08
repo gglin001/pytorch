@@ -6,6 +6,7 @@
 ################################################################################
 
 # git submodule update --recursive --init --depth=1
+# git submodule update --init --single-branch
 git submodule update --init --depth=1
 git submodule update --init --recursive --depth 1 third_party/kineto
 git submodule update --init --recursive --depth 1 third_party/tensorpipe
